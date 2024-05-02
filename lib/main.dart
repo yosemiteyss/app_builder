@@ -1,69 +1,40 @@
-import 'package:flutter/material.dart';
+import 'package:app_builder/app_builder.dart';
+import 'package:app_builder/service/build/build_service.dart';
+import 'package:app_builder/service/preference_service.dart';
+import 'package:app_builder/utils/platform.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:get_it/get_it.dart';
+import 'package:system_theme/system_theme.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
-  runApp(const MyApp());
+final GetIt getIt = GetIt.instance;
+
+void setupLocator() {
+  getIt.registerSingleton<PreferenceService>(const PreferenceService());
+  getIt.registerSingleton<BuildService>(BuildService(getIt.get()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  if (supportAccentColor) {
+    await SystemTheme.accentColor.load();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  if (isDesktop) {
+    await WindowManager.instance.ensureInitialized();
+    await windowManager.waitUntilReadyToShow().then((_) async {
+      await windowManager.setTitleBarStyle(
+        TitleBarStyle.hidden,
+        windowButtonVisibility: false,
+      );
+      await windowManager.setMinimumSize(const Size(500, 600));
+      await windowManager.show();
+      await windowManager.setPreventClose(true);
+      await windowManager.setSkipTaskbar(false);
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+  setupLocator();
+  runApp(const AppBuilder());
 }

@@ -1,0 +1,40 @@
+{
+  "@@locale": "en",
+  "appName": "App Builder",
+  "taskPageTitle": "Build",
+  "configPageTitle": "Configuration",
+  "toolsPageTitle": "Tools",
+  "logPageTitle": "Logs",
+  "backAction": "Back",
+  "editAction": "Edit",
+  "openAction": "Open",
+  "removeAction": "Remove",
+  "startAction": "Start",
+  "buildAction": "Build",
+  "selectAction": "Select",
+  "yes": "Yes",
+  "no": "No",
+  "waiting": "Waiting",
+  "confirmCloseTitle": "Confirm close",
+  "confirmCloseDesc": "Are you sure you want to close this window?",
+  "addTask": "Add Build",
+  "buildAll": "Build All",
+  "uninstallPackages": "Uninstall Packages",
+  "devices": "Devices",
+  "elapsedTime": "Elapsed: {elapsed}",
+  "@elapsedTime": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      }
+    }
+  },
+  "gradleTask": "Gradle Task",
+  "gradleTaskDesc": "Set the default gradle task.",
+  "stashChanges": "Stash Changes",
+  "stashChangesDesc": "Stash uncommitted changes before build.",
+  "installBuild": "Install Build",
+  "installBuildDesc": "Install APK to device after build.",
+  "outputFolder": "Output Folder",
+  "branch": "Branch"
+}
