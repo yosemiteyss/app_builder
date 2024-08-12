@@ -9,7 +9,6 @@ import 'package:app_builder/module/task/bloc/task_list_event.dart';
 import 'package:app_builder/module/task/model/task_list_state.dart';
 import 'package:app_builder/module/task/model/task_state.dart';
 import 'package:app_builder/utils/logger.dart';
-import 'package:app_builder/utils/map_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +17,7 @@ import 'package:path/path.dart';
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   TaskListBloc(this._preferenceService, this._buildService)
       : super(const TaskListState()) {
-    on<OnLoadSavedTask>(_onLoadSavedTask);
+    on<OnLoadTasks>(_onLoadTasks);
     on<OnAddTask>(_onAddTask);
     on<OnRemoveTask>(_onRemoveTask);
     on<OnUpdateTask>(_onUpdateTask);
@@ -50,7 +49,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   void _onListenTaskLogsUpdate() {
     _buildService.loggingStream.listen((message) {
       final messageList = [...?state.tasksLogs[message.taskDir], message];
-      final tasksLogs = state.tasksLogs.toCopy()
+      final tasksLogs = Map.of(state.tasksLogs)
         ..[message.taskDir] = messageList;
 
       Logger.d(message.message);
@@ -58,8 +57,8 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     });
   }
 
-  Future<void> _onLoadSavedTask(
-    OnLoadSavedTask event,
+  Future<void> _onLoadTasks(
+    OnLoadTasks event,
     Emitter<TaskListState> emit,
   ) async {
     final tasks = await _preferenceService.getTasks();
@@ -98,7 +97,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
 
     emit(state.copyWith(isTaskAdding: true));
 
-    final tasksMap = state.tasksMap.toCopy();
+    final tasksMap = Map.of(state.tasksMap);
 
     for (final directory in directories) {
       if (directory != null && !state.tasksMap.keys.contains(directory)) {
@@ -126,7 +125,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     OnRemoveTask event,
     Emitter<TaskListState> emit,
   ) async {
-    final tasksMap = state.tasksMap.toCopy()..remove(event.task.directory);
+    final tasksMap = Map.of(state.tasksMap)..remove(event.task.directory);
     emit(state.copyWith(tasksMap: tasksMap));
     await _preferenceService.saveTasks(tasksMap.values.toList());
   }
@@ -135,7 +134,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     OnUpdateTask event,
     Emitter<TaskListState> emit,
   ) async {
-    final tasksMap = state.tasksMap.toCopy()
+    final tasksMap = Map.of(state.tasksMap)
       ..[event.task.directory] = event.task;
     emit(state.copyWith(tasksMap: tasksMap));
     await _preferenceService.saveTasks(tasksMap.values.toList());
@@ -158,7 +157,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   ) async {
     emit(
       state.copyWith(
-        tasksLogs: state.tasksLogs.toCopy()..remove(event.task.directory),
+        tasksLogs: Map.of(state.tasksLogs)..remove(event.task.directory),
       ),
     );
 
@@ -177,7 +176,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     );
 
     if (directory != null) {
-      final tasksMap = state.tasksMap.toCopy()
+      final tasksMap = Map.of(state.tasksMap)
         ..update(
           event.task.directory,
           (value) => value.copyWith(outputDir: directory),
@@ -193,7 +192,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     Emitter<TaskListState> emit,
   ) async {
     final updatedTask = await _onLoadTaskBranch(event.task);
-    final tasksMap = state.tasksMap.toCopy()
+    final tasksMap = Map.of(state.tasksMap)
       ..[event.task.directory] = updatedTask;
     emit(state.copyWith(tasksMap: tasksMap));
   }

@@ -3,7 +3,7 @@ import 'package:app_builder/module/common/model/task.dart';
 
 sealed class TaskListEvent {}
 
-final class OnLoadSavedTask extends TaskListEvent {}
+final class OnLoadTasks extends TaskListEvent {}
 
 final class OnAddTask extends TaskListEvent {}
 

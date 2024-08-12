@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
   "appName": "App Builder",
-  "taskPageTitle": "Build",
+  "taskPageTitle": "Tasks",
   "settingsPageTitle": "Settings",
   "toolsPageTitle": "Tools",
   "logPageTitle": "Logs",
@@ -17,7 +17,7 @@
   "waiting": "Waiting",
   "confirmCloseTitle": "Confirm close",
   "confirmCloseDesc": "Are you sure you want to close this window?",
-  "addTask": "Add Build",
+  "addTask": "Add Task",
   "buildAll": "Build All",
   "uninstallPackages": "Uninstall Packages",
   "devices": "Devices",

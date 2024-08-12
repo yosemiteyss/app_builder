@@ -63,11 +63,7 @@ class _ToolsPageState extends State<ToolsPage> {
                 SliverToBoxAdapter(
                   child: Container(
                     padding: const EdgeInsets.only(bottom: 16),
-                    child: BlocSelector<ToolsBloc, ToolsState,
-                        (List<String>, String?)>(
-                      selector: (state) {
-                        return (state.deviceIds, state.selectedDeviceId);
-                      },
+                    child: BlocBuilder<ToolsBloc, ToolsState>(
                       builder: (context, state) {
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,36 +75,38 @@ class _ToolsPageState extends State<ToolsPage> {
                                 style: theme.typography.bodyStrong,
                               ),
                             ),
-                            if (state.$1.isNotEmpty) ...[
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(FluentIcons.refresh),
-                                    onPressed: () {
-                                      context
-                                          .read<ToolsBloc>()
-                                          .add(OnRefreshDevices());
-                                    },
-                                  ),
-                                  const SizedBox(width: 8),
-                                  DropDownButton(
-                                    title: Text(
-                                      state.$2 ?? context.l10n.selectAction,
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(FluentIcons.refresh),
+                                  onPressed: () {
+                                    context
+                                        .read<ToolsBloc>()
+                                        .add(OnRefreshDevices());
+                                  },
+                                ),
+                                if (state.deviceIds.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: DropDownButton(
+                                      title: Text(
+                                        state.selectedDeviceId ??
+                                            context.l10n.selectAction,
+                                      ),
+                                      items: state.deviceIds.map((deviceId) {
+                                        return MenuFlyoutItem(
+                                          text: Text(deviceId),
+                                          onPressed: () {
+                                            context
+                                                .read<ToolsBloc>()
+                                                .add(OnSetDeviceId(deviceId));
+                                          },
+                                        );
+                                      }).toList(),
                                     ),
-                                    items: state.$1.map((deviceId) {
-                                      return MenuFlyoutItem(
-                                        text: Text(deviceId),
-                                        onPressed: () {
-                                          context
-                                              .read<ToolsBloc>()
-                                              .add(OnSetDeviceId(deviceId));
-                                        },
-                                      );
-                                    }).toList(),
                                   ),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ],
                         );
                       },

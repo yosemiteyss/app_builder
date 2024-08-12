@@ -4,6 +4,7 @@ import 'package:app_builder/module/builder/exception/invalid_param_exception.dar
 import 'package:app_builder/module/preference/preference_service.dart';
 import 'package:app_builder/utils/logger.dart';
 import 'package:app_builder/utils/string_ext.dart';
+import 'package:flutter/foundation.dart';
 
 class AdbService {
   AdbService._({required String androidHome}) {
@@ -73,5 +74,19 @@ class AdbService {
     }
 
     return devices;
+  }
+
+  Stream<List<String>> getDevicesStream() async* {
+    List<String> prevDevices = await getDevices();
+
+    while (true) {
+      await Future<void>.delayed(const Duration(seconds: 2));
+      final currDevices = await getDevices();
+
+      if (!listEquals(prevDevices, currDevices)) {
+        yield currDevices;
+        prevDevices = List.from(currDevices);
+      }
+    }
   }
 }

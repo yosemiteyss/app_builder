@@ -22,7 +22,7 @@ class _TaskPageState extends State<TaskPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskListBloc>().add(OnLoadSavedTask());
+      context.read<TaskListBloc>().add(OnLoadTasks());
     });
   }
 
@@ -86,7 +86,7 @@ class _TaskPageState extends State<TaskPage> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(left: 8, right: 16),
-                        child: Icon(FluentIcons.build),
+                        child: Icon(FluentIcons.task_list),
                       ),
                       Expanded(
                         child: Text(context.l10n.buildAll),
@@ -175,10 +175,10 @@ class _TaskRowState extends State<_TaskRow> {
     final taskState = widget.task.state;
 
     return Expander(
-      initiallyExpanded: widget.task.expanded,
+      initiallyExpanded: widget.task.isExpanded,
       onStateChanged: (expanded) {
         context.read<TaskListBloc>().add(
-              OnUpdateTask(widget.task.copyWith(expanded: expanded)),
+              OnUpdateTask(widget.task.copyWith(isExpanded: expanded)),
             );
       },
       header: Padding(

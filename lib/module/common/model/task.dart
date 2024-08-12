@@ -10,7 +10,7 @@ class Task extends Equatable {
     this.gradleTask,
     this.outputDir,
     this.selectedBranch,
-    this.expanded = true,
+    this.isExpanded = true,
   });
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -29,7 +29,7 @@ class Task extends Equatable {
   final String? outputDir;
   final List<String> branches;
   final TaskState state;
-  final bool expanded;
+  final bool isExpanded;
 
   String get name => basename(directory);
 
@@ -41,7 +41,8 @@ class Task extends Equatable {
     String? outputDir,
     TaskState? state,
     List<String>? branches,
-    bool? expanded,
+    bool? isExpanded,
+    bool? isLoadingBranch,
   }) {
     return Task(
       directory: directory ?? this.directory,
@@ -50,7 +51,7 @@ class Task extends Equatable {
       outputDir: outputDir ?? this.outputDir,
       state: state ?? this.state,
       branches: branches ?? this.branches,
-      expanded: expanded ?? this.expanded,
+      isExpanded: isExpanded ?? this.isExpanded,
     );
   }
 
@@ -69,6 +70,6 @@ class Task extends Equatable {
         outputDir,
         branches,
         state,
-        expanded,
+        isExpanded,
       ];
 }

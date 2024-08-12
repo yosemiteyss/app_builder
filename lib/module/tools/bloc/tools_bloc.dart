@@ -99,7 +99,12 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
   ) async {
     final deviceIds = await _getDeviceIds();
 
-    emit(state.copyWith(deviceIds: deviceIds));
+    emit(
+      state.copyWith(
+        deviceIds: deviceIds,
+        selectedDeviceId: deviceIds.firstOrNull,
+      ),
+    );
   }
 
   Future<List<Package>> _getUninstallPackages() async {
