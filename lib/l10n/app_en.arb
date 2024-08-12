@@ -17,6 +17,8 @@
   "waiting": "Waiting",
   "confirmCloseTitle": "Confirm close",
   "confirmCloseDesc": "Are you sure you want to close this window?",
+  "confirmUninstall": "Confirm uninstall",
+  "confirmUninstallDesc": "Are you sure you want to uninstall selected applications?",
   "addTask": "Add Task",
   "buildAll": "Build All",
   "uninstallPackages": "Uninstall Packages",

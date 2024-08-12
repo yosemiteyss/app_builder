@@ -45,9 +45,7 @@ class _ToolsPageState extends State<ToolsPage> {
                                   state.selectedDeviceId != null
                               ? null
                               : () {
-                                  context
-                                      .read<ToolsBloc>()
-                                      .add(OnUninstallPackages());
+                                  _confirmUninstall(context);
                                 },
                           child: Text(context.l10n.startAction),
                         ),
@@ -145,6 +143,33 @@ class _ToolsPageState extends State<ToolsPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _confirmUninstall(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return ContentDialog(
+          title: Text(context.l10n.confirmUninstall),
+          content: Text(context.l10n.confirmUninstallDesc),
+          actions: [
+            FilledButton(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                Navigator.pop(context);
+                context.read<ToolsBloc>().add(OnUninstallPackages());
+              },
+            ),
+            Button(
+              child: Text(context.l10n.no),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -67,17 +67,17 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     OnUninstallPackages event,
     Emitter<ToolsState> emit,
   ) async {
+    final deviceId = state.selectedDeviceId;
+    if (deviceId == null) {
+      return;
+    }
+
     final adb = await AdbService.createAsync(_preferenceService);
     final packages = state.packages
         .map((e) => e.copyWith(state: TaskState.ongoing(null)))
         .toList();
 
     emit(state.copyWith(packages: packages));
-
-    final deviceId = state.selectedDeviceId;
-    if (deviceId == null) {
-      return;
-    }
 
     final futures = state.packages.map((package) async {
       final success = await adb.uninstall(package.name, deviceId);
