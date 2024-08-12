@@ -43,6 +43,7 @@ class _TaskPageState extends State<TaskPage> {
           ),
           content: CustomScrollView(
             slivers: [
+              // Add Task
               SliverToBoxAdapter(
                 child: Card(
                   margin: const EdgeInsets.only(bottom: 8),
@@ -78,6 +79,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                 ),
               ),
+              // Build all task
               SliverToBoxAdapter(
                 child: Card(
                   margin: const EdgeInsets.only(bottom: 8),
@@ -113,6 +115,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                 ),
               ),
+              // Task list
               BlocSelector<TaskListBloc, TaskListState, List<Task>>(
                 selector: (state) => state.taskListSorted,
                 builder: (context, state) {

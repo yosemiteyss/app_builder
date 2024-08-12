@@ -61,13 +61,15 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     OnLoadTasks event,
     Emitter<TaskListState> emit,
   ) async {
+    emit(state.copyWith(isTaskLoading: true));
+
     final tasks = await _preferenceService.getTasks();
     final futures = await Future.wait(tasks.map(_onLoadTaskBranch));
     final validTasks = futures.whereNotNull();
 
     final tasksMap = {for (final task in validTasks) task.directory: task};
 
-    emit(state.copyWith(tasksMap: tasksMap));
+    emit(state.copyWith(tasksMap: tasksMap, isTaskLoading: false));
 
     await _preferenceService.saveTasks(tasksMap.values.toList());
   }
