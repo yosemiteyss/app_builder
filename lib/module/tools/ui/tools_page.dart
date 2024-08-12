@@ -149,7 +149,7 @@ class _ToolsPageState extends State<ToolsPage> {
   Future<void> _confirmUninstall(BuildContext context) async {
     await showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return ContentDialog(
           title: Text(context.l10n.confirmUninstall),
           content: Text(context.l10n.confirmUninstallDesc),
@@ -157,14 +157,14 @@ class _ToolsPageState extends State<ToolsPage> {
             FilledButton(
               child: Text(context.l10n.yes),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 context.read<ToolsBloc>().add(OnUninstallPackages());
               },
             ),
             Button(
               child: Text(context.l10n.no),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
               },
             ),
           ],
