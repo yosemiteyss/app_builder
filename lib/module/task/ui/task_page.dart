@@ -397,7 +397,7 @@ class _TaskRowState extends State<_TaskRow> {
             ],
           ),
           if (taskState is ErrorState) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             Row(
               children: [
                 const Icon(
