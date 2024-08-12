@@ -5,7 +5,7 @@ import 'package:app_builder/module/builder/exception/invalid_param_exception.dar
 import 'package:app_builder/utils/string_ext.dart';
 
 class CheckoutAction extends BaseAction {
-  CheckoutAction(super.preferenceService, super.task, super.logging);
+  CheckoutAction(super.preferenceService, super.task, super.loggingController);
 
   @override
   Future<void> run() async {
@@ -16,8 +16,8 @@ class CheckoutAction extends BaseAction {
       throw const InvalidParamException('Branch is not set');
     }
 
-    final success = await git.checkout(selectedBranch);
-    if (!success) {
+    final isSuccess = await git.checkout(selectedBranch);
+    if (!isSuccess) {
       throw BuildActionException(task.directory, 'Checkout failed.');
     }
   }

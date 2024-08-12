@@ -11,6 +11,8 @@ class AdbService {
     _environment['ANDROID_HOME'] = androidHome;
   }
 
+  static const String _tag = 'AdbService';
+
   final Map<String, String> _environment = {};
 
   static Future<AdbService> createAsync(
@@ -33,7 +35,7 @@ class AdbService {
       runInShell: true,
     );
 
-    Logger.d('install: ${file.path}');
+    Logger.d(_tag, 'install: ${file.path}');
 
     return result.exitCode == 0;
   }
@@ -45,7 +47,7 @@ class AdbService {
       environment: _environment,
     );
 
-    Logger.d('uninstall: $package');
+    Logger.d(_tag, 'uninstall: $package');
 
     return result.exitCode == 0;
   }

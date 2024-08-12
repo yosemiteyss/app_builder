@@ -21,6 +21,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     on<OnAddTask>(_onAddTask);
     on<OnRemoveTask>(_onRemoveTask);
     on<OnUpdateTask>(_onUpdateTask);
+    on<OnStopTask>(_onStopTask);
     on<OnBuildTaskList>(_onBuildTaskList);
     on<OnBuildTask>(_onBuildTask);
     on<OnUpdateTaskOutputDir>(_onUpdateTaskOutputDir);
@@ -31,14 +32,16 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     _onListenTaskLogsUpdate();
   }
 
+  static const String _tag = 'TaskListBloc';
+
+  final PreferenceService _preferenceService;
+  final BuildService _buildService;
+
   @override
   Future<void> close() {
     _buildService.dispose();
     return super.close();
   }
-
-  final PreferenceService _preferenceService;
-  final BuildService _buildService;
 
   void _onListenEventUpdate() {
     _buildService.eventStream.listen((task) {
@@ -52,7 +55,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       final tasksLogs = Map.of(state.tasksLogs)
         ..[message.taskDir] = messageList;
 
-      Logger.d(message.message);
+      Logger.d(_tag, message.message);
       add(OnTaskLogsUpdated(tasksLogs));
     });
   }
@@ -140,6 +143,13 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       ..[event.task.directory] = event.task;
     emit(state.copyWith(tasksMap: tasksMap));
     await _preferenceService.saveTasks(tasksMap.values.toList());
+  }
+
+  Future<void> _onStopTask(
+    OnStopTask event,
+    Emitter<TaskListState> emit,
+  ) async {
+    await _buildService.stopTask(event.task);
   }
 
   Future<void> _onBuildTaskList(

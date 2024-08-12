@@ -1,25 +1,25 @@
 sealed class SettingsEvent {}
 
-final class OnConfigInit extends SettingsEvent {}
+final class OnSettingsInit extends SettingsEvent {}
 
-final class OnSetJavaHome extends SettingsEvent {}
+final class OnUpdateJavaHome extends SettingsEvent {}
 
-final class OnSetAndroidHome extends SettingsEvent {}
+final class OnUpdateAndroidHome extends SettingsEvent {}
 
-final class OnSetGradleTask extends SettingsEvent {
-  OnSetGradleTask(this.gradleTask);
+final class OnUpdateGradleTask extends SettingsEvent {
+  OnUpdateGradleTask(this.gradleTask);
 
   final String gradleTask;
 }
 
-final class OnSetStashChanges extends SettingsEvent {
-  OnSetStashChanges(this.stashChanges);
+final class OnUpdateStashChanges extends SettingsEvent {
+  OnUpdateStashChanges(this.isStashChanges);
 
-  final bool stashChanges;
+  final bool isStashChanges;
 }
 
-final class OnSetInstallBuild extends SettingsEvent {
-  OnSetInstallBuild(this.installBuild);
+final class OnUpdateInstallBuild extends SettingsEvent {
+  OnUpdateInstallBuild(this.installBuild);
 
   final bool installBuild;
 }

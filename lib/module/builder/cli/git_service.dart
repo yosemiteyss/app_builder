@@ -13,6 +13,8 @@ class GitService {
     }
   }
 
+  static const String _tag = 'GitService';
+
   final String directory;
 
   bool _isValidDirectory() {
@@ -30,7 +32,7 @@ class GitService {
       runInShell: true,
     );
 
-    Logger.d('Diff: ${result.exitCode}');
+    Logger.d(_tag, 'Diff: ${result.exitCode}');
 
     return result.exitCode == 0;
   }
@@ -48,7 +50,7 @@ class GitService {
       runInShell: true,
     );
 
-    Logger.d('Stashed: $message');
+    Logger.d(_tag, 'Stashed: $message');
 
     return result.exitCode == 0;
   }
@@ -61,7 +63,7 @@ class GitService {
       runInShell: true,
     );
 
-    Logger.d('Check out branch: $branch');
+    Logger.d(_tag, 'Check out branch: $branch');
 
     return result.exitCode == 0;
   }
@@ -85,7 +87,7 @@ class GitService {
 
       return branches;
     } else {
-      Logger.e('Error running git branch: ${result.stderr}');
+      Logger.e(_tag, 'Error running git branch: ${result.stderr}');
       return [];
     }
   }

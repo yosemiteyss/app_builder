@@ -11,20 +11,20 @@ import 'package:rxdart/rxdart.dart';
 class GradleService {
   GradleService._({
     required String javaHome,
-    required this.directory,
-    required this.logging,
-  }) {
+    required ReplaySubject<LogItem> loggingController,
+  }) : _loggingController = loggingController {
     _environment['JAVA_HOME'] = javaHome;
   }
 
+  static const String _tag = 'GradleService';
+
   final Map<String, String> _environment = {};
-  final String directory;
-  final ReplaySubject<LogItem> logging;
+  final ReplaySubject<LogItem> _loggingController;
 
   static Future<GradleService> createAsync({
     required PreferenceService preferenceService,
     required String directory,
-    required ReplaySubject<LogItem> logging,
+    required ReplaySubject<LogItem> loggingController,
   }) async {
     final config = await preferenceService.getConfig();
     final javaHome = config?.javaHome;
@@ -35,44 +35,66 @@ class GradleService {
 
     return GradleService._(
       javaHome: javaHome,
-      directory: directory,
-      logging: logging,
+      loggingController: loggingController,
     );
   }
 
-  Future<bool> build(String task, {String? flavor}) async {
-    final String gradle;
-    if (Platform.isWindows) {
-      gradle = 'gradlew.bat';
-    } else if (Platform.isLinux || Platform.isMacOS) {
-      gradle = 'gradlew';
-    } else {
-      throw UnsupportedError('Unsupported platform');
-    }
+  Future<bool> build({
+    required String taskName,
+    required String directory,
+    String? flavor,
+  }) async {
+    final gradle = _getGradleExecutableName();
 
-    Logger.d('Start gradle build');
+    Logger.d(_tag, 'Start gradle build');
 
     final process = await Process.start(
       gradle,
-      [task],
+      [taskName],
       environment: _environment,
       workingDirectory: directory,
       runInShell: true,
     );
 
     process.stdout.transform(utf8.decoder).listen((data) {
-      logging.add(
+      _loggingController.add(
         LogItem(taskDir: directory, message: data, level: LogLevel.stdout),
       );
     });
 
     process.stderr.transform(utf8.decoder).listen((data) {
-      logging.add(
+      _loggingController.add(
         LogItem(taskDir: directory, message: data, level: LogLevel.stderr),
       );
     });
 
     final exitCode = await process.exitCode;
     return exitCode == 0;
+  }
+
+  Future<bool> stop(String directory) async {
+    final gradle = _getGradleExecutableName();
+
+    final result = await Process.run(
+      gradle,
+      ['--stop'],
+      environment: _environment,
+      workingDirectory: directory,
+      runInShell: true,
+    );
+
+    return result.exitCode == 0;
+  }
+
+  String _getGradleExecutableName() {
+    if (Platform.isWindows) {
+      return 'gradlew.bat';
+    }
+
+    if (Platform.isLinux || Platform.isMacOS) {
+      return 'gradlew';
+    }
+
+    throw UnsupportedError('Unsupported platform');
   }
 }

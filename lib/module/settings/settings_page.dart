@@ -28,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     return BlocProvider(
-      create: (context) => SettingsBloc(getIt())..add(OnConfigInit()),
+      create: (context) => SettingsBloc(getIt())..add(OnSettingsInit()),
       child: BlocConsumer<SettingsBloc, Config>(
         listenWhen: (previous, current) {
           return previous.gradleTask == null && current.gradleTask != null;
@@ -72,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               : () {
                                   context
                                       .read<SettingsBloc>()
-                                      .add(OnSetJavaHome());
+                                      .add(OnUpdateJavaHome());
                                 },
                           child: Text(context.l10n.editAction),
                         );
@@ -109,7 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               : () {
                                   context
                                       .read<SettingsBloc>()
-                                      .add(OnSetAndroidHome());
+                                      .add(OnUpdateAndroidHome());
                                 },
                           child: Text(context.l10n.editAction),
                         );
@@ -152,7 +152,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             onChanged: (value) {
                               context
                                   .read<SettingsBloc>()
-                                  .add(OnSetGradleTask(value));
+                                  .add(OnUpdateGradleTask(value));
                             },
                           ),
                         );
@@ -188,13 +188,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       selector: (state) => state.isTaskOngoing,
                       builder: (context, state) {
                         return Checkbox(
-                          checked: config.stashChanges,
+                          checked: config.isStashChanges,
                           onChanged: state
                               ? null
                               : (value) {
                                   context
                                       .read<SettingsBloc>()
-                                      .add(OnSetStashChanges(value ?? false));
+                                      .add(OnUpdateStashChanges(value ?? false));
                                 },
                         );
                       },
@@ -229,13 +229,13 @@ class _SettingsPageState extends State<SettingsPage> {
                       selector: (state) => state.isTaskOngoing,
                       builder: (context, state) {
                         return Checkbox(
-                          checked: config.installBuild,
+                          checked: config.isInstallBuild,
                           onChanged: state
                               ? null
                               : (value) {
                                   context
                                       .read<SettingsBloc>()
-                                      .add(OnSetInstallBuild(value ?? false));
+                                      .add(OnUpdateInstallBuild(value ?? false));
                                 },
                         );
                       },

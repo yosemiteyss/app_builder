@@ -14,11 +14,18 @@ final class OnRemoveTask extends TaskListEvent {
 }
 
 final class OnUpdateTask extends TaskListEvent {
-  OnUpdateTask(this.task, {this.save = true});
+  OnUpdateTask(this.task, {this.isSave = true});
 
   final Task task;
-  final bool save;
+  final bool isSave;
 }
+
+final class OnStopTask extends TaskListEvent {
+  OnStopTask(this.task);
+
+  final Task task;
+}
+
 
 final class OnBuildTaskList extends TaskListEvent {}
 

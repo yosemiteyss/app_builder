@@ -4,7 +4,7 @@ import 'package:app_builder/module/builder/exception/build_action_exception.dart
 
 /// Stash uncommitted changes.
 class StashAction extends BaseAction {
-  StashAction(super.preferenceService, super.task, super.logging);
+  StashAction(super.preferenceService, super.task, super.loggingController);
 
   @override
   Future<void> run() async {
@@ -17,13 +17,13 @@ class StashAction extends BaseAction {
       return;
     }
 
-    final stashChanges = config?.stashChanges ?? false;
+    final stashChanges = config?.isStashChanges ?? false;
     if (!stashChanges) {
       return;
     }
 
-    final success = await git.stash();
-    if (!success) {
+    final isSuccess = await git.stash();
+    if (!isSuccess) {
       throw BuildActionException(task.directory, 'Stash failed');
     }
   }

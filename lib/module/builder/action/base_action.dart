@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract class BaseAction {
-  BaseAction(this.preferenceService, this.task, this.logging);
+  BaseAction(this.preferenceService, this.task, this.loggingController);
 
   @protected
   final PreferenceService preferenceService;
@@ -14,7 +14,7 @@ abstract class BaseAction {
   final Task task;
 
   @protected
-  late final ReplaySubject<LogItem> logging;
+  final ReplaySubject<LogItem> loggingController;
 
   String get name;
 

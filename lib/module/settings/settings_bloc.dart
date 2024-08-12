@@ -8,17 +8,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, Config> {
   SettingsBloc(this._preferenceService) : super(const Config()) {
-    on<OnConfigInit>(_onConfigInit);
-    on<OnSetJavaHome>(_onSetJavaHome);
-    on<OnSetAndroidHome>(_onSetAndroidHome);
-    on<OnSetGradleTask>(_onSetGradleTask);
-    on<OnSetStashChanges>(_onSetStashChanges);
-    on<OnSetInstallBuild>(_onSetInstallBuild);
+    on<OnSettingsInit>(_onSettingsInit);
+    on<OnUpdateJavaHome>(_onUpdateJavaHome);
+    on<OnUpdateAndroidHome>(_onUpdateAndroidHome);
+    on<OnUpdateGradleTask>(_onUpdateGradleTask);
+    on<OnUpdateStashChanges>(_onUpdateStashChanges);
+    on<OnUpdateInstallBuild>(_onUpdateInstallBuild);
   }
 
   final PreferenceService _preferenceService;
 
-  Future<void> _onConfigInit(OnConfigInit event, Emitter<Config> emit) async {
+  Future<void> _onSettingsInit(OnSettingsInit event, Emitter<Config> emit) async {
     final config = await _preferenceService.getConfig();
     if (config != null) {
       emit(config);
@@ -26,8 +26,8 @@ class SettingsBloc extends Bloc<SettingsEvent, Config> {
     }
   }
 
-  Future<void> _onSetJavaHome(
-      OnSetJavaHome event, Emitter<Config> emit) async {
+  Future<void> _onUpdateJavaHome(
+      OnUpdateJavaHome event, Emitter<Config> emit) async {
     final directory = await getDirectoryPath();
     if (directory != null) {
       emit(state.copyWith(androidHome: directory));
@@ -35,8 +35,8 @@ class SettingsBloc extends Bloc<SettingsEvent, Config> {
     }
   }
 
-  Future<void> _onSetAndroidHome(
-      OnSetAndroidHome event, Emitter<Config> emit) async {
+  Future<void> _onUpdateAndroidHome(
+      OnUpdateAndroidHome event, Emitter<Config> emit) async {
     final directory = await getDirectoryPath();
     if (directory != null) {
       emit(state.copyWith(androidHome: directory));
@@ -44,21 +44,21 @@ class SettingsBloc extends Bloc<SettingsEvent, Config> {
     }
   }
 
-  Future<void> _onSetGradleTask(
-      OnSetGradleTask event, Emitter<Config> emit) async {
+  Future<void> _onUpdateGradleTask(
+      OnUpdateGradleTask event, Emitter<Config> emit) async {
     emit(state.copyWith(gradleTask: event.gradleTask));
     await _preferenceService.saveConfig(state);
   }
 
-  Future<void> _onSetStashChanges(
-      OnSetStashChanges event, Emitter<Config> emit) async {
-    emit(state.copyWith(stashChanges: event.stashChanges));
+  Future<void> _onUpdateStashChanges(
+      OnUpdateStashChanges event, Emitter<Config> emit) async {
+    emit(state.copyWith(isStashChanges: event.isStashChanges));
     await _preferenceService.saveConfig(state);
   }
 
-  Future<void> _onSetInstallBuild(
-      OnSetInstallBuild event, Emitter<Config> emit) async {
-    emit(state.copyWith(installBuild: event.installBuild));
+  Future<void> _onUpdateInstallBuild(
+      OnUpdateInstallBuild event, Emitter<Config> emit) async {
+    emit(state.copyWith(isInstallBuild: event.installBuild));
     await _preferenceService.saveConfig(state);
   }
 }

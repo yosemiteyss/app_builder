@@ -195,24 +195,39 @@ class _TaskRowState extends State<_TaskRow> {
                 style: theme.typography.bodyStrong,
               ),
             ),
-            const SizedBox(width: 16),
             Expanded(
-              child: Text(widget.task.directory),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(widget.task.directory),
+              ),
             ),
-            const SizedBox(width: 16),
-            taskState.build(context),
-            const SizedBox(width: 16),
-            // Ongoing action
-            switch (taskState) {
-              OngoingState(:final action) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
+            // Task state icon.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: taskState.build(context),
+            ),
+            // Task state message.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: switch (taskState) {
+                OngoingState(:final action) => Text(
                     '${action ?? context.l10n.waiting}...',
                     style: theme.typography.caption,
                   ),
+                _ => const SizedBox.shrink(),
+              },
+            ),
+            // Stop button
+            if (taskState is OngoingState)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: IconButton(
+                  icon: const Icon(FluentIcons.stop),
+                  onPressed: () {
+                    context.read<TaskListBloc>().add(OnStopTask(widget.task));
+                  },
                 ),
-              _ => const SizedBox.shrink(),
-            },
+              ),
             // More actions menu
             FlyoutTarget(
               controller: _flyoutController,

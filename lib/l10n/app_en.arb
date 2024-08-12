@@ -11,6 +11,7 @@
   "removeAction": "Remove",
   "startAction": "Start",
   "buildAction": "Build",
+  "stopAction": "Stop",
   "selectAction": "Select",
   "yes": "Yes",
   "no": "No",

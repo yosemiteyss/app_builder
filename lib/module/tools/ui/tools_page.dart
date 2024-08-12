@@ -97,7 +97,7 @@ class _ToolsPageState extends State<ToolsPage> {
                                           onPressed: () {
                                             context
                                                 .read<ToolsBloc>()
-                                                .add(OnSetDeviceId(deviceId));
+                                                .add(OnUpdateDeviceId(deviceId));
                                           },
                                         );
                                       }).toList(),

@@ -4,6 +4,8 @@ import 'package:app_builder/utils/logger.dart';
 import 'package:collection/collection.dart';
 
 abstract class ApkService {
+  static const String _tag = 'ApkService';
+
   static Future<File?> findLatest(String directory) async {
     final dir = Directory(directory);
     if (dir.existsSync()) {
@@ -20,7 +22,7 @@ abstract class ApkService {
           .toList();
 
       final latest = sortedApkFiles.firstOrNull;
-      Logger.d('Found latest APK: ${latest?.path}');
+      Logger.d(_tag, 'Found latest APK: ${latest?.path}');
       return latest;
     }
 
@@ -39,7 +41,7 @@ abstract class ApkService {
             return false;
           }
 
-          Logger.d('Deleted APK: ${file.path}');
+          Logger.d(_tag, 'Deleted APK: ${file.path}');
         }
       }
     }

@@ -6,7 +6,7 @@ import 'package:app_builder/module/builder/exception/invalid_param_exception.dar
 import 'package:app_builder/utils/string_ext.dart';
 
 class InstallAction extends BaseAction {
-  InstallAction(super.preferenceService, super.task, super.logging);
+  InstallAction(super.preferenceService, super.task, super.loggingController);
 
   @override
   Future<void> run() async {
@@ -19,14 +19,14 @@ class InstallAction extends BaseAction {
       throw const InvalidParamException('Output folder is not set');
     }
 
-    if (config?.installBuild == true) {
+    if (config?.isInstallBuild == true) {
       final newestAPK = await ApkService.findLatest(outputDir);
       if (newestAPK == null) {
         throw BuildActionException(task.directory, 'No apk found to install');
       }
 
-      final success = await adb.install(newestAPK);
-      if (!success) {
+      final isSuccess = await adb.install(newestAPK);
+      if (!isSuccess) {
         throw BuildActionException(task.directory, 'Install failed');
       }
     }

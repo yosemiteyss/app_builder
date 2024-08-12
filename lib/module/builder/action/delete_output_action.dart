@@ -6,7 +6,7 @@ import 'package:app_builder/utils/string_ext.dart';
 
 /// Delete all APK files from output directory.
 class DeleteOutputAction extends BaseAction {
-  DeleteOutputAction(super.preferenceService, super.task, super.logging);
+  DeleteOutputAction(super.preferenceService, super.task, super.loggingController);
 
   @override
   Future<void> run() async {
@@ -16,8 +16,8 @@ class DeleteOutputAction extends BaseAction {
       throw const InvalidParamException('Output folder is not set');
     }
 
-    final success = await ApkService.deleteAll(outputDir);
-    if (!success) {
+    final isSuccess = await ApkService.deleteAll(outputDir);
+    if (!isSuccess) {
       throw BuildActionException(task.directory, 'Delete output failed.');
     }
   }

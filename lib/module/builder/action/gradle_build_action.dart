@@ -5,23 +5,31 @@ import 'package:app_builder/module/builder/exception/invalid_param_exception.dar
 import 'package:app_builder/utils/string_ext.dart';
 
 class GradleBuildAction extends BaseAction {
-  GradleBuildAction(super.preferenceService, super.task, super.logging);
+  GradleBuildAction(
+    super.preferenceService,
+    super.task,
+    super.loggingController,
+  );
 
   @override
   Future<void> run() async {
     final gradle = await GradleService.createAsync(
       preferenceService: preferenceService,
       directory: task.directory,
-      logging: logging,
+      loggingController: loggingController,
     );
 
-    final gradleTask = task.gradleTask;
-    if (gradleTask == null || gradleTask.isBlank) {
+    final taskName = task.gradleTask;
+    if (taskName == null || taskName.isBlank) {
       throw const InvalidParamException('Gradle task is not set');
     }
 
-    final success = await gradle.build(gradleTask);
-    if (!success) {
+    final isSuccess = await gradle.build(
+      taskName: taskName,
+      directory: task.directory,
+    );
+
+    if (!isSuccess) {
       throw BuildActionException(task.directory, 'Gradle build failed.');
     }
   }

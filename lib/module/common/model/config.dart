@@ -9,8 +9,8 @@ class Config extends Equatable {
     this.javaHome,
     this.androidHome,
     this.gradleTask,
-    this.stashChanges = true,
-    this.installBuild = true,
+    this.isStashChanges = true,
+    this.isInstallBuild = true,
   });
 
   factory Config.fromJson(Map<String, dynamic> json) => _$ConfigFromJson(json);
@@ -25,10 +25,10 @@ class Config extends Equatable {
   final String? gradleTask;
 
   @JsonKey(name: 'stash_changes')
-  final bool stashChanges;
+  final bool isStashChanges;
 
   @JsonKey(name: 'install_build')
-  final bool installBuild;
+  final bool isInstallBuild;
 
   Map<String, dynamic> toJson() => _$ConfigToJson(this);
 
@@ -36,15 +36,15 @@ class Config extends Equatable {
     String? javaHome,
     String? androidHome,
     String? gradleTask,
-    bool? stashChanges,
-    bool? installBuild,
+    bool? isStashChanges,
+    bool? isInstallBuild,
   }) {
     return Config(
       javaHome: javaHome ?? this.javaHome,
       androidHome: androidHome ?? this.androidHome,
       gradleTask: gradleTask ?? this.gradleTask,
-      stashChanges: stashChanges ?? this.stashChanges,
-      installBuild: installBuild ?? this.installBuild,
+      isStashChanges: isStashChanges ?? this.isStashChanges,
+      isInstallBuild: isInstallBuild ?? this.isInstallBuild,
     );
   }
 
@@ -53,7 +53,7 @@ class Config extends Equatable {
         javaHome,
         androidHome,
         gradleTask,
-        stashChanges,
-        installBuild,
+        isStashChanges,
+        isInstallBuild,
       ];
 }

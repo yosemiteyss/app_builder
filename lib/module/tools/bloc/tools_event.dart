@@ -18,8 +18,8 @@ final class OnRemoveUninstallPackage extends ToolsEvent {
 
 final class OnUninstallPackages extends ToolsEvent {}
 
-final class OnSetDeviceId extends ToolsEvent {
-  OnSetDeviceId(this.deviceId);
+final class OnUpdateDeviceId extends ToolsEvent {
+  OnUpdateDeviceId(this.deviceId);
 
   final String deviceId;
 }

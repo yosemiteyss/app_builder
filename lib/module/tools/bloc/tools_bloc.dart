@@ -14,7 +14,7 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     on<OnAddUninstallPackage>(_onAddUninstallPackage);
     on<OnRemoveUninstallPackage>(_onRemoveUninstallPackage);
     on<OnUninstallPackages>(_onUninstallPackages);
-    on<OnSetDeviceId>(_onSetDeviceId);
+    on<OnUpdateDeviceId>(_onUpdateDeviceId);
     on<OnRefreshDevices>(_onRefreshDevices);
   }
 
@@ -80,16 +80,16 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     emit(state.copyWith(packages: packages));
 
     final futures = state.packages.map((package) async {
-      final success = await adb.uninstall(package.name, deviceId);
+      final isSuccess = await adb.uninstall(package.name, deviceId);
       return package.copyWith(
-        state: success ? TaskState.success(null) : TaskState.error(null),
+        state: isSuccess ? TaskState.success(null) : TaskState.error(null),
       );
     });
 
     emit(state.copyWith(packages: await Future.wait(futures)));
   }
 
-  void _onSetDeviceId(OnSetDeviceId event, Emitter<ToolsState> emit) {
+  void _onUpdateDeviceId(OnUpdateDeviceId event, Emitter<ToolsState> emit) {
     emit(state.copyWith(selectedDeviceId: event.deviceId));
   }
 
