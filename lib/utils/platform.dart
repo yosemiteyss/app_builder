@@ -9,7 +9,7 @@ bool get isDesktop {
       .contains(defaultTargetPlatform);
 }
 
-bool get supportAccentColor {
+bool get isSupportAccentColor {
   if (kIsWeb) {
     return false;
   }

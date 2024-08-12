@@ -2,7 +2,7 @@
   "@@locale": "en",
   "appName": "App Builder",
   "taskPageTitle": "Build",
-  "configPageTitle": "Configuration",
+  "settingsPageTitle": "Settings",
   "toolsPageTitle": "Tools",
   "logPageTitle": "Logs",
   "backAction": "Back",

@@ -1,5 +1,5 @@
 extension IntExtension on int {
-  String padZeroLeft(int width) {
+  String padZeroLeft(int size) {
     return toString().padLeft(2, '0');
   }
 }

@@ -1,6 +1,6 @@
 import 'package:app_builder/app_builder.dart';
-import 'package:app_builder/service/build/build_service.dart';
-import 'package:app_builder/service/preference_service.dart';
+import 'package:app_builder/module/builder/build_service.dart';
+import 'package:app_builder/module/preference/preference_service.dart';
 import 'package:app_builder/utils/platform.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:get_it/get_it.dart';
@@ -17,7 +17,7 @@ void setupLocator() {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (supportAccentColor) {
+  if (isSupportAccentColor) {
     await SystemTheme.accentColor.load();
   }
 
