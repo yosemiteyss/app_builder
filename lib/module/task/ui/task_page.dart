@@ -45,7 +45,7 @@ class _TaskPageState extends State<TaskPage> {
             slivers: [
               // Add Task
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: Card(
                     margin: const EdgeInsets.only(bottom: 8),
@@ -84,7 +84,7 @@ class _TaskPageState extends State<TaskPage> {
               ),
               // Build all task
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 sliver: SliverToBoxAdapter(
                   child: Card(
                     margin: const EdgeInsets.only(bottom: 8),
@@ -127,7 +127,7 @@ class _TaskPageState extends State<TaskPage> {
                 builder: (context, state) {
                   return SliverPadding(
                     padding:
-                        const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+                        const EdgeInsets.only(left: 24, right: 24, bottom: 24),
                     sliver: SliverList.separated(
                       itemCount: state.length,
                       separatorBuilder: (context, index) {
