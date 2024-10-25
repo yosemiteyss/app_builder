@@ -37,81 +37,87 @@ class _TaskPageState extends State<TaskPage> {
         Toast.show(context: context, message: state.taskException.toString());
       },
       builder: (context, state) {
-        return ScaffoldPage.withPadding(
+        return ScaffoldPage(
           header: PageHeader(
             title: Text(context.l10n.taskPageTitle),
           ),
           content: CustomScrollView(
             slivers: [
               // Add Task
-              SliverToBoxAdapter(
-                child: Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 8, right: 16),
-                        child: Icon(FluentIcons.add_to),
-                      ),
-                      Expanded(
-                        child: Text(context.l10n.addTask),
-                      ),
-                      BlocSelector<TaskListBloc, TaskListState, bool>(
-                        selector: (state) => state.allowTaskAdd,
-                        builder: (context, state) {
-                          return ConstrainedBox(
-                            constraints: const BoxConstraints(minWidth: 60),
-                            child: FilledButton(
-                              onPressed: !state
-                                  ? null
-                                  : () {
-                                      context
-                                          .read<TaskListBloc>()
-                                          .add(OnAddTask());
-                                    },
-                              child: Text(context.l10n.openAction),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8, right: 16),
+                          child: Icon(FluentIcons.add_to),
+                        ),
+                        Expanded(
+                          child: Text(context.l10n.addTask),
+                        ),
+                        BlocSelector<TaskListBloc, TaskListState, bool>(
+                          selector: (state) => state.allowTaskAdd,
+                          builder: (context, state) {
+                            return ConstrainedBox(
+                              constraints: const BoxConstraints(minWidth: 60),
+                              child: FilledButton(
+                                onPressed: !state
+                                    ? null
+                                    : () {
+                                        context
+                                            .read<TaskListBloc>()
+                                            .add(OnAddTask());
+                                      },
+                                child: Text(context.l10n.openAction),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               // Build all task
-              SliverToBoxAdapter(
-                child: Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.only(left: 8, right: 16),
-                        child: Icon(FluentIcons.task_list),
-                      ),
-                      Expanded(
-                        child: Text(context.l10n.buildAll),
-                      ),
-                      BlocSelector<TaskListBloc, TaskListState, bool>(
-                        selector: (state) => state.isTaskOngoing,
-                        builder: (context, state) {
-                          return ConstrainedBox(
-                            constraints: const BoxConstraints(minWidth: 60),
-                            child: FilledButton(
-                              onPressed: state
-                                  ? null
-                                  : () {
-                                      context
-                                          .read<TaskListBloc>()
-                                          .add(OnBuildTaskList());
-                                    },
-                              child: Text(context.l10n.startAction),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8, right: 16),
+                          child: Icon(FluentIcons.task_list),
+                        ),
+                        Expanded(
+                          child: Text(context.l10n.buildAll),
+                        ),
+                        BlocSelector<TaskListBloc, TaskListState, bool>(
+                          selector: (state) => state.isTaskOngoing,
+                          builder: (context, state) {
+                            return ConstrainedBox(
+                              constraints: const BoxConstraints(minWidth: 60),
+                              child: FilledButton(
+                                onPressed: state
+                                    ? null
+                                    : () {
+                                        context
+                                            .read<TaskListBloc>()
+                                            .add(OnBuildTaskList());
+                                      },
+                                child: Text(context.l10n.startAction),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -119,17 +125,21 @@ class _TaskPageState extends State<TaskPage> {
               BlocSelector<TaskListBloc, TaskListState, List<Task>>(
                 selector: (state) => state.taskListSorted,
                 builder: (context, state) {
-                  return SliverList.separated(
-                    itemCount: state.length,
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(height: 8);
-                    },
-                    itemBuilder: (context, index) {
-                      return _TaskRow(
-                        key: ValueKey(state[index].directory),
-                        task: state[index],
-                      );
-                    },
+                  return SliverPadding(
+                    padding:
+                        const EdgeInsets.only(left: 16, right: 16, bottom: 24),
+                    sliver: SliverList.separated(
+                      itemCount: state.length,
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(height: 8);
+                      },
+                      itemBuilder: (context, index) {
+                        return _TaskRow(
+                          key: ValueKey(state[index].directory),
+                          task: state[index],
+                        );
+                      },
+                    ),
                   );
                 },
               ),
