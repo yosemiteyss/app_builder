@@ -34,8 +34,8 @@ jobs:
       - name: Archive Build Artifacts
         run: |
           $releaseName = "${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows-${env:GITHUB_RUN_NUMBER}.zip"
-          echo "RELEASE_NAME=$releaseName" >> ${env:RELEASE_NAME}
-          Compress-Archive -Path "build/windows/runner/Release/*" -DestinationPath $releaseName
+          echo "RELEASE_NAME=$releaseName" >> ${env:GITHUB_ENV}
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $releaseName
         shell: powershell
 
       - name: Create Release
