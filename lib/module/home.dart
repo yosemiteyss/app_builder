@@ -176,32 +176,40 @@ class _HomeState extends State<Home> with WindowListener {
   @override
   Future<void> onWindowClose() async {
     final isPreventClose = await windowManager.isPreventClose();
-    if (isPreventClose && mounted) {
-      await showDialog(
-        context: context,
-        builder: (_) {
-          return ContentDialog(
-            title: Text(context.l10n.confirmCloseTitle),
-            content: Text(context.l10n.confirmCloseDesc),
-            actions: [
-              FilledButton(
-                child: Text(context.l10n.yes),
-                onPressed: () {
-                  Navigator.pop(context);
-                  windowManager.destroy();
-                },
-              ),
-              Button(
-                child: Text(context.l10n.no),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
+    if (!isPreventClose) return;
+    if (!mounted) return;
+
+    final result = await _showConfirmExitDialog();
+    if (result == null || !result) return;
+
+    await windowManager.setPreventClose(false);
+    await windowManager.close();
+  }
+
+  Future<bool?> _showConfirmExitDialog() {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return ContentDialog(
+          title: Text(context.l10n.confirmCloseTitle),
+          content: Text(context.l10n.confirmCloseDesc),
+          actions: [
+            FilledButton(
+              child: Text(context.l10n.yes),
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+            ),
+            Button(
+              child: Text(context.l10n.no),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   int _calculateSelectedIndex(
