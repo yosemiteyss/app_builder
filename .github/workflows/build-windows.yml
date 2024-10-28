@@ -1,0 +1,48 @@
+name: Build and Release Windows App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: flutter-actions/setup-flutter@v3
+        with:
+          channel: stable
+          version: 3.24.4
+
+      - name: Extract Package Info
+        run: |
+          $packageName = Select-String -Path "pubspec.yaml" -Pattern "^name:\s*(.+)" | ForEach-Object { $_.Matches[0].Groups[1].Value }
+          $version = Select-String -Path "pubspec.yaml" -Pattern "^version:\s*(.+)" | ForEach-Object { $_.Matches[0].Groups[1].Value }
+          echo "PACKAGE_NAME=$packageName" >> ${env:GITHUB_ENV}
+          echo "VERSION_NAME=$version" >> ${env:GITHUB_ENV}
+        shell: pwsh
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Release
+        run: flutter build windows --release
+
+      - name: Archive Build Artifacts
+        run: |
+          $releaseName = "${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows-${env:GITHUB_RUN_NUMBER}.zip"
+          echo "RELEASE_NAME=$releaseName" >> ${env:RELEASE_NAME}
+          Compress-Archive -Path "build/windows/runner/Release/*" -DestinationPath $releaseName
+        shell: powershell
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ env.RELEASE_NAME }}
+          files: ${{ env.RELEASE_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_RELEASE_PAT }}
