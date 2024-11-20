@@ -39,5 +39,6 @@
   "installBuild": "Install Build",
   "installBuildDesc": "Install APK to device after build.",
   "outputFolder": "Output Folder",
-  "branch": "Branch"
+  "branch": "Branch",
+  "excludeFromBuildAll": "Exclude from Build All"
 }

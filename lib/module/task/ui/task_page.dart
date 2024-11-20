@@ -406,6 +406,36 @@ class _TaskRowState extends State<_TaskRow> {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          // Exclude from build all
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                width: 140,
+                child: Text(
+                  context.l10n.excludeFromBuildAll,
+                  style: theme.typography.bodyStrong,
+                ),
+              ),
+              BlocSelector<TaskListBloc, TaskListState, bool>(
+                selector: (state) => state.isTaskOngoing,
+                builder: (context, state) {
+                  return Checkbox(
+                    checked: widget.task.isExcludeFromBuildAll ?? false,
+                    onChanged: state
+                        ? null
+                        : (value) {
+                            context.read<TaskListBloc>().add(
+                                  OnUpdateTask(widget.task
+                                      .copyWith(isExcludeFromBuildAll: value)),
+                                );
+                          },
+                  );
+                },
+              ),
+            ],
+          ),
           if (taskState is ErrorState) ...[
             const SizedBox(height: 16),
             Row(

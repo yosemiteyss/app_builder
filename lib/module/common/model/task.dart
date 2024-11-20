@@ -3,24 +3,24 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart';
 
 class Task extends Equatable {
-  const Task({
-    required this.directory,
-    required this.state,
-    this.branches = const [],
-    this.gradleTask,
-    this.outputDir,
-    this.selectedBranch,
-    this.isExpanded = true,
-  });
+  const Task(
+      {required this.directory,
+      required this.state,
+      this.branches = const [],
+      this.gradleTask,
+      this.outputDir,
+      this.selectedBranch,
+      this.isExpanded = true,
+      this.isExcludeFromBuildAll});
 
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
-      directory: json['directory'],
-      state: TaskState.idle(),
-      gradleTask: json['gradle_task'],
-      outputDir: json['output_dir'],
-      selectedBranch: json['selected_branch'],
-    );
+        directory: json['directory'],
+        state: TaskState.idle(),
+        gradleTask: json['gradle_task'],
+        outputDir: json['output_dir'],
+        selectedBranch: json['selected_branch'],
+        isExcludeFromBuildAll: json['is_exclude_from_build_all']);
   }
 
   final String directory;
@@ -30,6 +30,7 @@ class Task extends Equatable {
   final List<String> branches;
   final TaskState state;
   final bool isExpanded;
+  final bool? isExcludeFromBuildAll;
 
   String get name => basename(directory);
 
@@ -43,6 +44,7 @@ class Task extends Equatable {
     List<String>? branches,
     bool? isExpanded,
     bool? isLoadingBranch,
+    bool? isExcludeFromBuildAll,
   }) {
     return Task(
       directory: directory ?? this.directory,
@@ -52,6 +54,8 @@ class Task extends Equatable {
       state: state ?? this.state,
       branches: branches ?? this.branches,
       isExpanded: isExpanded ?? this.isExpanded,
+      isExcludeFromBuildAll:
+          isExcludeFromBuildAll ?? this.isExcludeFromBuildAll,
     );
   }
 
@@ -60,6 +64,7 @@ class Task extends Equatable {
         'gradle_task': gradleTask,
         'output_dir': outputDir,
         'selected_branch': selectedBranch,
+        'is_exclude_from_build_all': isExcludeFromBuildAll,
       };
 
   @override
@@ -71,5 +76,6 @@ class Task extends Equatable {
         branches,
         state,
         isExpanded,
+        isExcludeFromBuildAll,
       ];
 }

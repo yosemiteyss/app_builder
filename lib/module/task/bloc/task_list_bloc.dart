@@ -156,7 +156,10 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     OnBuildTaskList event,
     Emitter<TaskListState> emit,
   ) async {
-    final tasks = state.tasksMap.values.toList();
+    final tasks = state.tasksMap.values
+        .whereNot((task) => task.isExcludeFromBuildAll == true)
+        .toList();
+
     if (tasks.isNotEmpty) {
       emit(state.copyWith(tasksLogs: {}));
       await _buildService.build(tasks);
