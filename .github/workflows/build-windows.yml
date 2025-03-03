@@ -15,7 +15,8 @@ jobs:
         uses: flutter-actions/setup-flutter@v3
         with:
           channel: stable
-          version: 3.24.4
+          flutter-version-file: pubspec.yaml
+          cache: true
 
       - name: Extract Package Info
         run: |
