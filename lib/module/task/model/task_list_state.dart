@@ -55,5 +55,5 @@ class TaskListState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isTaskAdding, tasksMap, tasksLogs];
+  List<Object?> get props => [isTaskLoading, isTaskAdding, tasksMap, tasksLogs];
 }
