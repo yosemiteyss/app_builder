@@ -30,7 +30,7 @@ class SettingsBloc extends Bloc<SettingsEvent, Config> {
       OnUpdateJavaHome event, Emitter<Config> emit) async {
     final directory = await getDirectoryPath();
     if (directory != null) {
-      emit(state.copyWith(androidHome: directory));
+      emit(state.copyWith(javaHome: directory));
       await _preferenceService.saveConfig(state);
     }
   }
