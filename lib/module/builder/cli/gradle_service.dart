@@ -92,7 +92,7 @@ class GradleService {
     }
 
     if (Platform.isLinux || Platform.isMacOS) {
-      return 'gradlew';
+      return './gradlew';
     }
 
     throw UnsupportedError('Unsupported platform');
