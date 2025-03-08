@@ -45,7 +45,7 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
       emit(state.copyWith(packages: packages));
 
       await _preferenceService.saveUninstallPackages(
-        packages.map((e) => e.name).whereNotNull().toList(),
+        packages.map((e) => e.name).nonNulls.toList(),
       );
     }
   }
@@ -59,7 +59,7 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     emit(state.copyWith(packages: packages));
 
     await _preferenceService.saveUninstallPackages(
-      packages.map((e) => e.name).whereNotNull().toList(),
+      packages.map((e) => e.name).nonNulls.toList(),
     );
   }
 
