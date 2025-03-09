@@ -27,7 +27,7 @@ class _SettingsViewState extends State<SettingsView> {
     return BlocProvider(
       create: (context) => SettingsBloc(
         preferencesRepository: context.read<PreferencesRepository>(),
-      ),
+      )..add(const OnLoadPreferences()),
       child: BlocConsumer<SettingsBloc, SettingsState>(
         listenWhen: (previous, current) {
           return previous.preferences.gradleTask == null &&
