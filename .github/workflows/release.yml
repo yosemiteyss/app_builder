@@ -97,7 +97,7 @@ jobs:
         id: archive_release
         run: |
           echo "ARCHIVE_NAME=${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows.zip" >> ${env:GITHUB_ENV}
-          Compress-Archive -Path "build/windows/x64/runner/Release/" -DestinationPath "./release/${env:ARCHIVE_NAME}"
+          Compress-Archive -Path "build/windows/x64/runner/Release/" -DestinationPath "${env:ARCHIVE_NAME}"
         shell: powershell
 
       - name: Upload Artifact
@@ -105,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.ARCHIVE_NAME }}
-          path: ./release/${{ env.ARCHIVE_NAME }}
+          path: ${{ env.ARCHIVE_NAME }}
 
   create_release:
     needs: [ build_windows ]
