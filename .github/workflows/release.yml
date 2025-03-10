@@ -82,7 +82,7 @@ jobs:
 
       - name: Build Release
         id: build_release
-        run: flutter build windows --release
+        run: flutter build windows --release --target=lib/main/main.dart
 
       - name: Read Package Info
         id: read_package_info
