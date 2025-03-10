@@ -1,7 +1,7 @@
 import 'package:app_builder/l10n/l10n.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'package:window_manager/window_manager.dart';
 
 class HomeView extends StatefulWidget {
@@ -131,7 +131,7 @@ class _HomeViewState extends State<HomeView> with WindowListener {
           );
         }(),
         title: () {
-          if (kIsWeb) {
+          if (UniversalPlatform.isWeb) {
             return Align(
               alignment: AlignmentDirectional.centerStart,
               child: Text(context.l10n.appName),
@@ -144,10 +144,10 @@ class _HomeViewState extends State<HomeView> with WindowListener {
             ),
           );
         }(),
-        actions: const Row(
+        actions: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (!kIsWeb) WindowButtons(),
+            if (!UniversalPlatform.isWeb) const WindowButtons(),
           ],
         ),
       ),
