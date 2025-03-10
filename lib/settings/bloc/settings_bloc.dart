@@ -41,7 +41,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Emitter<SettingsState> emit,
   ) async {
     try {
-      final directory = await getDirectoryPath();
+      final directory = await getDirectoryPath(
+        initialDirectory: state.preferences.javaHome,
+      );
       if (directory != null) {
         final updatedPrefs = state.preferences.copyWith(javaHome: directory);
         emit(state.copyWith(preferences: updatedPrefs));
@@ -57,7 +59,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     Emitter<SettingsState> emit,
   ) async {
     try {
-      final directory = await getDirectoryPath();
+      final directory = await getDirectoryPath(
+        initialDirectory: state.preferences.androidHome,
+      );
       if (directory != null) {
         final updatedPrefs = state.preferences.copyWith(androidHome: directory);
         emit(state.copyWith(preferences: updatedPrefs));
