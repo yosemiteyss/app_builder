@@ -94,6 +94,7 @@ jobs:
         shell: pwsh
 
       - name: Archive Release
+        id: archive_release
         run: |
           echo "ARCHIVE_NAME=${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows.zip" >> ${env:GITHUB_ENV}
           Compress-Archive -Path "build/windows/x64/runner/Release/" -DestinationPath "./release/${env:ARCHIVE_NAME}"
