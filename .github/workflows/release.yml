@@ -144,8 +144,9 @@ jobs:
       - name: Archive Release
         id: archive_release
         run: |
-          echo "ARCHIVE_NAME=${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip" >> $GITHUB_ENV
-          cd build/macos/Build/Products/Release && zip -r ${{ env.ARCHIVE_NAME }} app_builder.app
+          ARCHIVE_NAME="${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip"
+          echo "ARCHIVE_NAME=$ARCHIVE_NAME" >> $GITHUB_ENV
+          cd build/macos/Build/Products/Release && zip -r $ARCHIVE_NAME app_builder.app
 
       - name: Upload Artifact
         id: upload_artifact
