@@ -96,8 +96,9 @@ jobs:
       - name: Archive Release
         id: archive_release
         run: |
-          echo "ARCHIVE_NAME=${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows.zip" >> ${env:GITHUB_ENV}
-          Compress-Archive -Path "build/windows/x64/runner/Release/" -DestinationPath "${env:ARCHIVE_NAME}"
+          $archiveName = "${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows.zip"
+          echo "ARCHIVE_NAME=$archiveName" >> ${env:GITHUB_ENV}
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $archiveName
         shell: powershell
 
       - name: Upload Artifact
