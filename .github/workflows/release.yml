@@ -50,7 +50,7 @@ jobs:
 
       - name: Update Version
         id: update_version
-        uses: yosemiteyss/update-package-version@v1.0.5
+        uses: yosemiteyss/update-package-version@v1.0.6
         with:
           runtime: dart
           release_tag: ${{ github.event.inputs.release_tag }}
@@ -96,7 +96,7 @@ jobs:
       - name: Archive Release
         id: archive_release
         run: |
-          $archiveName = "${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows.zip"
+          $archiveName = "${env:PACKAGE_NAME}-${env:VERSION_NAME}-windows-x64.zip"
           echo "ARCHIVE_NAME=$archiveName" >> ${env:GITHUB_ENV}
           Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $archiveName
         shell: powershell
@@ -108,8 +108,54 @@ jobs:
           name: ${{ env.ARCHIVE_NAME }}
           path: ${{ env.ARCHIVE_NAME }}
 
+  build_macos:
+    needs: [ update_version ]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        id: setup_flutter
+        uses: subosito/flutter-action@v2.18.0
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install Dependencies
+        id: install_dependencies
+        run: flutter pub get
+
+      - name: Build Release
+        id: build_release
+        run: flutter build macos --release --target=lib/main/main.dart
+
+      - name: Read Package Info
+        id: read_package_info
+        run: |
+          echo "PACKAGE_NAME=$(yq e '.name' pubspec.yaml)" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$(yq e '.version' pubspec.yaml)" >> $GITHUB_ENV
+
+      - name: Archive Release
+        id: archive_release
+        run: |
+          echo "ARCHIVE_NAME=${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip" >> $GITHUB_ENV
+          cd build/macos/Build/Products/Release && zip -r ${{ env.ARCHIVE_NAME }} app_builder.app
+
+      - name: Upload Artifact
+        id: upload_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARCHIVE_NAME }}
+          path: ./build/macos/Build/Products/Release/${{ env.ARCHIVE_NAME }}
+
   create_release:
-    needs: [ build_windows ]
+    needs: [ build_windows, build_macos ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -125,11 +171,18 @@ jobs:
           echo "PACKAGE_NAME=$(yq e '.name' pubspec.yaml)" >> $GITHUB_ENV
           echo "PACKAGE_VERSION=$(yq e '.version' pubspec.yaml)" >> $GITHUB_ENV
 
-      - name: Download Artifact (Windows)
+      - name: Download Artifact (windows)
         id: download_artifact_windows
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows.zip
+          name: ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows-x64.zip
+          path: ./release
+
+      - name: Download Artifact (macos)
+        id: download_artifact_macos
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip
           path: ./release
 
       - name: Delete Artifact
@@ -137,7 +190,8 @@ jobs:
         uses: geekyeggo/delete-artifact@v5
         with:
           name: |
-            ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows.zip
+            ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows-x64.zip
+            ${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip
           failOnError: false
 
       - name: Create Release
@@ -147,6 +201,7 @@ jobs:
           name: ${{ env.PACKAGE_VERSION }}
           tag_name: ${{ env.PACKAGE_VERSION }}
           files: |
-            ./release/${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows.zip
+            ./release/${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-windows-x64.zip
+            ./release/${{ env.PACKAGE_NAME }}-${{ env.PACKAGE_VERSION }}-macos-arm64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.WRITE_REPO_PAT }}
