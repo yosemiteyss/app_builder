@@ -17,7 +17,7 @@ Future<void> bootstrap(AppBuilder builder) async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
-      if (_isSupportAccentColor) {
+      if (defaultTargetPlatform.supportsAccentColor) {
         await SystemTheme.accentColor.load();
       }
 
@@ -43,13 +43,4 @@ Future<void> bootstrap(AppBuilder builder) async {
     },
     (_, __) {},
   );
-}
-
-bool get _isSupportAccentColor {
-  if (UniversalPlatform.isWeb) {
-    return false;
-  }
-
-  return [TargetPlatform.windows, TargetPlatform.android]
-      .contains(defaultTargetPlatform);
 }
