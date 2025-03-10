@@ -18,7 +18,7 @@ jobs:
 
       - name: Setup Flutter
         id: setup_flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.18.0
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
@@ -42,7 +42,7 @@ jobs:
 
       - name: Setup Flutter
         id: setup_flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.18.0
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
@@ -70,7 +70,7 @@ jobs:
 
       - name: Setup Flutter
         id: setup_flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.18.0
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
