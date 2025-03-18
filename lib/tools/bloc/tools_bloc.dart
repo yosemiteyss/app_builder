@@ -1,5 +1,4 @@
 import 'package:app_builder/utils/string_ext.dart';
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:preferences_repository/preferences_repository.dart';
@@ -19,8 +18,6 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     on<OnAddUninstallPackage>(_onAddUninstallPackage);
     on<OnRemoveUninstallPackage>(_onRemoveUninstallPackage);
     on<OnUninstallPackages>(_onUninstallPackages);
-    on<OnUpdateDeviceId>(_onUpdateDeviceId);
-    on<OnRefreshDevices>(_onRefreshDevices);
   }
 
   final PreferencesRepository _preferencesRepository;
@@ -31,15 +28,7 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
   ) async {
     try {
       final uninstallPackages = await _getUninstallPackages();
-      final deviceIds = await _getDeviceIds();
-
-      emit(
-        state.copyWith(
-          uninstallPackages: uninstallPackages,
-          deviceIds: deviceIds,
-          selectedDeviceId: deviceIds.firstOrNull,
-        ),
-      );
+      emit(state.copyWith(uninstallPackages: uninstallPackages));
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
@@ -88,7 +77,7 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     Emitter<ToolsState> emit,
   ) async {
     try {
-      final deviceId = state.selectedDeviceId;
+      final deviceId = event.deviceId;
       if (deviceId == null) {
         return;
       }
@@ -105,7 +94,10 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
       emit(state.copyWith(uninstallPackages: uninstallPackages));
 
       final futures = state.uninstallPackages.map((package) async {
-        final isSuccess = await adb.uninstall(package.name, deviceId);
+        final isSuccess = await adb.uninstall(
+          package: package.name,
+          deviceId: deviceId,
+        );
         return package.copyWith(
           state: isSuccess ? const SuccessState(null) : const ErrorState(null),
         );
@@ -117,43 +109,10 @@ class ToolsBloc extends Bloc<ToolsEvent, ToolsState> {
     }
   }
 
-  void _onUpdateDeviceId(
-    OnUpdateDeviceId event,
-    Emitter<ToolsState> emit,
-  ) {
-    emit(state.copyWith(selectedDeviceId: event.deviceId));
-  }
-
-  Future<void> _onRefreshDevices(
-    OnRefreshDevices event,
-    Emitter<ToolsState> emit,
-  ) async {
-    try {
-      final deviceIds = await _getDeviceIds();
-
-      emit(
-        state.copyWith(
-          deviceIds: deviceIds,
-          selectedDeviceId: deviceIds.firstOrNull,
-        ),
-      );
-    } on Exception catch (error, stackTrace) {
-      addError(error, stackTrace);
-    }
-  }
-
   Future<List<Package>> _getUninstallPackages() async {
     final packages = await _preferencesRepository.getUninstallPackages();
     return packages
         .map((package) => Package(name: package, state: const IdleState()))
         .toList();
-  }
-
-  Future<List<String>> _getDeviceIds() async {
-    final preferences = await _preferencesRepository.getPreferences();
-    final adb = await AdbService.createAsync(
-      androidHome: preferences.androidHome,
-    );
-    return adb.getDevices();
   }
 }

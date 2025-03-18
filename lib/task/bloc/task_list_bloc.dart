@@ -196,8 +196,13 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
 
       if (tasks.isNotEmpty) {
         emit(state.copyWith(tasksLogs: {}));
+
         final preferences = await _preferencesRepository.getPreferences();
-        await _taskBuilderService.build(tasks: tasks, preferences: preferences);
+        await _taskBuilderService.build(
+          tasks: tasks,
+          preferences: preferences,
+          deviceId: event.deviceId,
+        );
       }
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
@@ -221,6 +226,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
         await _taskBuilderService.build(
           tasks: [task],
           preferences: preferences,
+          deviceId: event.deviceId,
         );
       }
     } on Exception catch (error, stackTrace) {

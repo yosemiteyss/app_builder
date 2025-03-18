@@ -30,24 +30,13 @@ final class OnRemoveUninstallPackage extends ToolsEvent {
 }
 
 final class OnUninstallPackages extends ToolsEvent {
-  const OnUninstallPackages();
+  const OnUninstallPackages({
+    required this.deviceId,
+  });
 
-  @override
-  List<Object?> get props => [];
-}
-
-final class OnUpdateDeviceId extends ToolsEvent {
-  const OnUpdateDeviceId({required this.deviceId});
-
-  final String deviceId;
+  /// The id of the selected adb device.
+  final String? deviceId;
 
   @override
   List<Object?> get props => [deviceId];
-}
-
-final class OnRefreshDevices extends ToolsEvent {
-  const OnRefreshDevices();
-
-  @override
-  List<Object?> get props => [];
 }

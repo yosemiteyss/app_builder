@@ -29,6 +29,7 @@ class TaskBuilderService {
   Future<void> build({
     required List<Task> tasks,
     required Preferences preferences,
+    required String? deviceId,
   }) async {
     for (final task in tasks) {
       _eventController.add(
@@ -37,13 +38,18 @@ class TaskBuilderService {
     }
 
     for (final task in tasks) {
-      await _buildTask(task: task, preferences: preferences);
+      await _buildTask(
+        task: task,
+        preferences: preferences,
+        deviceId: deviceId,
+      );
     }
   }
 
   Future<void> _buildTask({
     required Task task,
     required Preferences preferences,
+    required String? deviceId,
   }) async {
     try {
       Logger.d(_tag, 'Building: ${task.name}');
@@ -75,6 +81,7 @@ class TaskBuilderService {
           preferences: preferences,
           task: task,
           logging: _loggingController,
+          deviceId: deviceId,
         ),
       ];
 

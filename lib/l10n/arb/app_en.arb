@@ -24,6 +24,7 @@
   "buildAll": "Build All",
   "uninstallPackages": "Uninstall Packages",
   "devices": "Devices",
+  "devicesDesc": "Set the adb device to install build.",
   "elapsedTime": "Elapsed: {elapsed}",
   "@elapsedTime": {
     "placeholders": {

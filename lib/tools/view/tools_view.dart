@@ -1,3 +1,4 @@
+import 'package:app_builder/app/app.dart';
 import 'package:app_builder/common/widget/task_state_view.dart';
 import 'package:app_builder/l10n/l10n.dart';
 import 'package:app_builder/tools/tools.dart';
@@ -41,8 +42,7 @@ class _ToolsViewState extends State<ToolsView> {
                       return ConstrainedBox(
                         constraints: const BoxConstraints(minWidth: 60),
                         child: FilledButton(
-                          onPressed: state.uninstallPackages.isEmpty &&
-                                  state.selectedDeviceId != null
+                          onPressed: state.uninstallPackages.isEmpty
                               ? null
                               : () {
                                   _confirmUninstall(context);
@@ -58,61 +58,6 @@ class _ToolsViewState extends State<ToolsView> {
             content: CustomScrollView(
               shrinkWrap: true,
               slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: BlocBuilder<ToolsBloc, ToolsState>(
-                      builder: (context, state) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 140,
-                              child: Text(
-                                context.l10n.devices,
-                                style: theme.typography.bodyStrong,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: const Icon(FluentIcons.refresh),
-                                  onPressed: () {
-                                    context
-                                        .read<ToolsBloc>()
-                                        .add(const OnRefreshDevices());
-                                  },
-                                ),
-                                if (state.deviceIds.isNotEmpty)
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: DropDownButton(
-                                      title: Text(
-                                        state.selectedDeviceId ??
-                                            context.l10n.selectAction,
-                                      ),
-                                      items: state.deviceIds.map((deviceId) {
-                                        return MenuFlyoutItem(
-                                          text: Text(deviceId),
-                                          onPressed: () {
-                                            context.read<ToolsBloc>().add(
-                                                  OnUpdateDeviceId(
-                                                    deviceId: deviceId,
-                                                  ),
-                                                );
-                                          },
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
                 BlocSelector<ToolsBloc, ToolsState, List<Package>>(
                   selector: (state) => state.uninstallPackages,
                   builder: (context, state) {
@@ -160,7 +105,12 @@ class _ToolsViewState extends State<ToolsView> {
               child: Text(context.l10n.yes),
               onPressed: () {
                 Navigator.pop(dialogContext);
-                context.read<ToolsBloc>().add(const OnUninstallPackages());
+
+                final selectedDeviceId =
+                    context.read<AppBloc>().state.selectedDeviceId;
+                context.read<ToolsBloc>().add(
+                      OnUninstallPackages(deviceId: selectedDeviceId),
+                    );
               },
             ),
             Button(

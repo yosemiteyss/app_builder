@@ -1,3 +1,4 @@
+import 'package:app_builder/app/app.dart';
 import 'package:app_builder/l10n/l10n.dart';
 import 'package:app_builder/settings/settings.dart';
 import 'package:app_builder/task/task.dart';
@@ -24,6 +25,7 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+
     return BlocProvider(
       create: (context) => SettingsBloc(
         preferencesRepository: context.read<PreferencesRepository>(),
@@ -45,6 +47,67 @@ class _SettingsViewState extends State<SettingsView> {
               title: Text(context.l10n.settingsPageTitle),
             ),
             children: [
+              // Device
+              Card(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.l10n.devices,
+                            style: theme.typography.bodyStrong,
+                          ),
+                          Text(
+                            context.l10n.devicesDesc,
+                            style: theme.typography.caption?.copyWith(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(FluentIcons.refresh),
+                      onPressed: () {
+                        context.read<AppBloc>().add(const OnRefreshDevices());
+                      },
+                    ),
+                    BlocBuilder<AppBloc, AppState>(
+                      builder: (context, state) {
+                        if (state.deviceIds.isNotEmpty) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: DropDownButton(
+                              title: Text(
+                                state.selectedDeviceId ??
+                                    context.l10n.selectAction,
+                              ),
+                              items: state.deviceIds.map((deviceId) {
+                                return MenuFlyoutItem(
+                                  text: Text(deviceId),
+                                  onPressed: () {
+                                    context.read<AppBloc>().add(
+                                          OnUpdateDeviceId(
+                                            deviceId: deviceId,
+                                          ),
+                                        );
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 4),
               // JAVA_HOME
               Card(
                 child: Row(

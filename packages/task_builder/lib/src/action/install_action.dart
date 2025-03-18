@@ -9,7 +9,11 @@ class InstallAction extends BaseAction {
     required super.preferences,
     required super.task,
     required super.logging,
+    required this.deviceId,
   });
+
+  /// The id of the adb device.
+  final String? deviceId;
 
   @override
   Future<void> run() async {
@@ -23,22 +27,28 @@ class InstallAction extends BaseAction {
       throw const InvalidParamException('Output folder is not set');
     }
 
-    if (preferences.isInstallBuild) {
-      final newestAPK = await ApkService.findLatest(outputDir);
-      if (newestAPK == null) {
-        throw BuildException(
-          directory: task.directory,
-          message: 'No apk found to install',
-        );
-      }
+    if (!preferences.isInstallBuild) {
+      return;
+    }
 
-      final isSuccess = await adb.install(newestAPK);
-      if (!isSuccess) {
-        throw BuildException(
-          directory: task.directory,
-          message: 'Install failed',
-        );
-      }
+    if (deviceId == null) {
+      throw const InvalidParamException('Device is not set');
+    }
+
+    final newestAPK = await ApkService.findLatest(outputDir);
+    if (newestAPK == null) {
+      throw BuildException(
+        directory: task.directory,
+        message: 'No apk found to install',
+      );
+    }
+
+    final isSuccess = await adb.install(file: newestAPK, deviceId: deviceId!);
+    if (!isSuccess) {
+      throw BuildException(
+        directory: task.directory,
+        message: 'Install failed',
+      );
     }
   }
 

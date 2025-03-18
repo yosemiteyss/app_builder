@@ -101,11 +101,7 @@ class _TaskViewState extends State<TaskView> {
                               child: FilledButton(
                                 onPressed: state
                                     ? null
-                                    : () {
-                                        context
-                                            .read<TaskListBloc>()
-                                            .add(const OnBuildTaskList());
-                                      },
+                                    : () => _buildTaskList(context),
                                 child: Text(context.l10n.startAction),
                               ),
                             );
@@ -132,6 +128,9 @@ class _TaskViewState extends State<TaskView> {
                         return _TaskRow(
                           key: ValueKey(state[index].directory),
                           task: state[index],
+                          onBuildTask: (task) {
+                            _buildTaskItem(context, task);
+                          },
                         );
                       },
                     ),
@@ -144,12 +143,31 @@ class _TaskViewState extends State<TaskView> {
       },
     );
   }
+
+  void _buildTaskItem(BuildContext context, Task task) {
+    final selectedDeviceId = context.read<AppBloc>().state.selectedDeviceId;
+    context.read<TaskListBloc>().add(
+          OnBuildTask(task: task, deviceId: selectedDeviceId),
+        );
+  }
+
+  void _buildTaskList(BuildContext context) {
+    final selectedDeviceId = context.read<AppBloc>().state.selectedDeviceId;
+    context.read<TaskListBloc>().add(
+          OnBuildTaskList(deviceId: selectedDeviceId),
+        );
+  }
 }
 
 class _TaskRow extends StatefulWidget {
-  const _TaskRow({required this.task, super.key});
+  const _TaskRow({
+    required this.task,
+    required this.onBuildTask,
+    super.key,
+  });
 
   final Task task;
+  final ValueChanged<Task> onBuildTask;
 
   @override
   State<_TaskRow> createState() => _TaskRowState();
@@ -249,11 +267,7 @@ class _TaskRowState extends State<_TaskRow> {
                           if (taskState is! OngoingState)
                             MenuFlyoutItem(
                               text: Text(context.l10n.buildAction),
-                              onPressed: () {
-                                context
-                                    .read<TaskListBloc>()
-                                    .add(OnBuildTask(task: widget.task));
-                              },
+                              onPressed: () => widget.onBuildTask(widget.task),
                             ),
                           MenuFlyoutItem(
                             text: Text(context.l10n.logPageTitle),

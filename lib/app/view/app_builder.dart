@@ -32,6 +32,11 @@ class App extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
+            create: (_) => AppBloc(
+              preferencesRepository: preferencesRepository,
+            )..add(const OnRefreshDevices()),
+          ),
+          BlocProvider(
             create: (_) => TaskListBloc(
               preferenceRepository: preferencesRepository,
               taskRepository: taskRepository,

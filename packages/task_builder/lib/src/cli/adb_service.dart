@@ -26,10 +26,13 @@ class AdbService {
   }
 
   /// Install APK file.
-  Future<bool> install(File file) async {
+  Future<bool> install({
+    required File file,
+    required String deviceId,
+  }) async {
     final result = await Process.run(
       'adb',
-      ['install', '-r', '-t', file.path],
+      ['-s', deviceId, 'install', '-r', '-t', file.path],
       environment: _environment,
       runInShell: true,
     );
@@ -40,7 +43,10 @@ class AdbService {
   }
 
   /// Uninstall APK package from device.
-  Future<bool> uninstall(String package, String deviceId) async {
+  Future<bool> uninstall({
+    required String package,
+    required String deviceId,
+  }) async {
     final result = await Process.run(
       'adb',
       ['-s', deviceId, 'uninstall', package],

@@ -47,19 +47,25 @@ final class OnStopTask extends TaskListEvent {
 }
 
 final class OnBuildTaskList extends TaskListEvent {
-  const OnBuildTaskList();
+  const OnBuildTaskList({required this.deviceId});
+
+  final String? deviceId;
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [deviceId];
 }
 
 final class OnBuildTask extends TaskListEvent {
-  const OnBuildTask({required this.task});
+  const OnBuildTask({
+    required this.task,
+    required this.deviceId,
+  });
 
   final Task task;
+  final String? deviceId;
 
   @override
-  List<Object?> get props => [task];
+  List<Object?> get props => [task, deviceId];
 }
 
 final class OnUpdateTaskOutputDir extends TaskListEvent {
