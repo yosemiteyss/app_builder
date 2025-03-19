@@ -11,7 +11,7 @@ final _preferencesShellNavKey = GlobalKey<NavigatorState>();
 final _toolsShellNavKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  initialLocation: '/tasks',
+  initialLocation: TaskView.path,
   navigatorKey: rootNavigatorKey,
   routes: [
     StatefulShellRoute.indexedStack(
@@ -20,17 +20,17 @@ final appRouter = GoRouter(
           navigatorKey: _taskShellNavKey,
           routes: [
             GoRoute(
-              path: '/tasks',
+              path: TaskView.path,
               builder: (context, state) {
                 return const TaskView();
               },
             ),
             GoRoute(
-              path: '/logs/:directory',
+              path: LogsView.path,
               builder: (context, state) {
-                final directory =
-                    Uri.decodeComponent(state.pathParameters['directory']!);
-                return LogsView(directory: directory);
+                return LogsView.fromPathParams(
+                  pathParameters: state.pathParameters,
+                );
               },
             ),
           ],
@@ -39,7 +39,7 @@ final appRouter = GoRouter(
           navigatorKey: _preferencesShellNavKey,
           routes: [
             GoRoute(
-              path: '/config',
+              path: SettingsView.path,
               builder: (context, state) {
                 return const SettingsView();
               },
@@ -50,7 +50,7 @@ final appRouter = GoRouter(
           navigatorKey: _toolsShellNavKey,
           routes: [
             GoRoute(
-              path: '/tools',
+              path: ToolsView.path,
               builder: (context, state) {
                 return const ToolsView();
               },

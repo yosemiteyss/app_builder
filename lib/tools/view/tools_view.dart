@@ -9,6 +9,8 @@ import 'package:preferences_repository/preferences_repository.dart';
 class ToolsView extends StatefulWidget {
   const ToolsView({super.key});
 
+  static const String path = '/tools';
+
   @override
   State<ToolsView> createState() => _ToolsViewState();
 }

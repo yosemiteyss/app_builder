@@ -9,6 +9,8 @@ import 'package:preferences_repository/preferences_repository.dart';
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
+  static const String path = '/settings';
+
   @override
   State<SettingsView> createState() => _SettingsViewState();
 }

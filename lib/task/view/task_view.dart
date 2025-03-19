@@ -11,6 +11,8 @@ import 'package:task_repository/task_repository.dart';
 class TaskView extends StatefulWidget {
   const TaskView({super.key});
 
+  static const String path = '/tasks';
+
   @override
   State<TaskView> createState() => _TaskViewState();
 }

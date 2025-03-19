@@ -1,4 +1,7 @@
 import 'package:app_builder/l10n/l10n.dart';
+import 'package:app_builder/settings/settings.dart';
+import 'package:app_builder/task/task.dart';
+import 'package:app_builder/tools/tools.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -19,19 +22,19 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with WindowListener {
   late final List<NavigationPaneItem> _paneItems = [
     PaneItem(
-      key: const ValueKey('/tasks'),
+      key: const ValueKey(TaskView.path),
       icon: const Icon(FluentIcons.task_add),
       title: Text(context.l10n.taskPageTitle),
       body: const SizedBox.shrink(),
     ),
     PaneItem(
-      key: const ValueKey('/config'),
+      key: const ValueKey(SettingsView.path),
       icon: const Icon(FluentIcons.parameter),
       title: Text(context.l10n.settingsPageTitle),
       body: const SizedBox.shrink(),
     ),
     PaneItem(
-      key: const ValueKey('/tools'),
+      key: const ValueKey(ToolsView.path),
       icon: const Icon(FluentIcons.toolbox),
       title: Text(context.l10n.toolsPageTitle),
       body: const SizedBox.shrink(),

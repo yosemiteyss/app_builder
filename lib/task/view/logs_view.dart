@@ -7,6 +7,13 @@ import 'package:task_builder/task_builder.dart';
 class LogsView extends StatefulWidget {
   const LogsView({required this.directory, super.key});
 
+  LogsView.fromPathParams({
+    required Map<String, String> pathParameters,
+    super.key,
+  }) : directory = Uri.decodeComponent(pathParameters['directory']!);
+
+  static const String path = '/logs/:directory';
+
   final String directory;
 
   @override
