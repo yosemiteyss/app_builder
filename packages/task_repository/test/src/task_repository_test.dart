@@ -35,10 +35,12 @@ void main() {
           () async {
         final tasks = [
           const Task(
+            index: 0,
             directory: 'path/to/1',
             state: IdleState(),
           ),
           const Task(
+            index: 1,
             directory: 'path/to/2',
             state: IdleState(),
             gradleTask: 'assembleDebug',
@@ -72,10 +74,12 @@ void main() {
       test('should save tasks successfully', () async {
         final tasks = [
           const Task(
+            index: 0,
             directory: 'path/to/1',
             state: IdleState(),
           ),
           const Task(
+            index: 1,
             directory: 'path/to/2',
             state: IdleState(),
             gradleTask: 'assembleDebug',
@@ -103,10 +107,12 @@ void main() {
       test('should throws TaskException when storage write fails', () async {
         final tasks = [
           const Task(
+            index: 0,
             directory: 'path/to/1',
             state: IdleState(),
           ),
           const Task(
+            index: 1,
             directory: 'path/to/2',
             state: IdleState(),
             gradleTask: 'assembleDebug',

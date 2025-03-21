@@ -32,11 +32,12 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     on<OnBuildTaskList>(_onBuildTaskList);
     on<OnBuildTask>(_onBuildTask);
     on<OnUpdateTaskOutputDir>(_onUpdateTaskOutputDir);
+    on<OnUpdateTaskOrder>(_onUpdateTaskOrder);
     on<OnRefreshTaskBranch>(_onRefreshTaskBranch);
     on<OnTaskLogsUpdated>(_onTaskLogsUpdated);
 
-    _onListenEventUpdate();
-    _onListenTaskLogsUpdate();
+    _onListenTaskEvent();
+    _onListenTaskLogs();
   }
 
   static const String _tag = 'TaskListBloc';
@@ -51,13 +52,13 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     return super.close();
   }
 
-  void _onListenEventUpdate() {
+  void _onListenTaskEvent() {
     _taskBuilderService.eventStream.listen((task) {
       add(OnUpdateTask(task: task));
     });
   }
 
-  void _onListenTaskLogsUpdate() {
+  void _onListenTaskLogs() {
     _taskBuilderService.loggingStream.listen((message) {
       final messageList = [...?state.tasksLogs[message.taskDir], message];
       final tasksLogs = Map.of(state.tasksLogs)
@@ -75,16 +76,22 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     try {
       emit(state.copyWith(isTaskLoading: true));
 
-      final tasks = await _taskRepository.getTasks();
-      final futures = await Future.wait(tasks.map(_onLoadTaskBranch));
+      var tasksList = await _taskRepository.getTasks();
+      tasksList = await Future.wait(tasksList.map(_onLoadTaskBranch));
 
-      final tasksMap = {
-        for (final task in futures.nonNulls) task.directory: task,
-      };
+      final tasksMap = <String, Task>{};
+
+      // Update task index if not set.
+      for (var (index, task) in tasksList.nonNulls.indexed) {
+        if (task.index == -1) {
+          task = task.copyWith(index: index);
+        }
+        tasksMap[task.directory] = task;
+      }
 
       emit(state.copyWith(tasksMap: tasksMap, isTaskLoading: false));
 
-      await _taskRepository.saveTasks(tasksMap.values.toList());
+      await _taskRepository.saveTasks(state.tasksOrdered.toList());
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
@@ -125,6 +132,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
               join(directory, 'app', 'build', 'outputs', 'apk', 'snapshot');
 
           final task = Task(
+            index: state.tasksMap.values.length,
             directory: directory,
             outputDir: Directory(outputDir).path,
             state: const IdleState(),
@@ -137,7 +145,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
 
       emit(state.copyWith(tasksMap: tasksMap, isTaskAdding: false));
 
-      await _taskRepository.saveTasks(tasksMap.values.toList());
+      await _taskRepository.saveTasks(state.tasksOrdered.toList());
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
@@ -150,7 +158,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     try {
       final tasksMap = Map.of(state.tasksMap)..remove(event.task.directory);
       emit(state.copyWith(tasksMap: tasksMap));
-      await _taskRepository.saveTasks(tasksMap.values.toList());
+      await _taskRepository.saveTasks(state.tasksOrdered.toList());
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
@@ -164,7 +172,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
       final tasksMap = Map.of(state.tasksMap)
         ..[event.task.directory] = event.task;
       emit(state.copyWith(tasksMap: tasksMap));
-      await _taskRepository.saveTasks(tasksMap.values.toList());
+      await _taskRepository.saveTasks(state.tasksOrdered.toList());
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
@@ -190,7 +198,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     Emitter<TaskListState> emit,
   ) async {
     try {
-      final tasks = state.tasksMap.values
+      final tasks = state.tasksOrdered
           .whereNot((task) => task.isExcludeFromBuildAll ?? false)
           .toList();
 
@@ -251,11 +259,39 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
           );
 
         emit(state.copyWith(tasksMap: tasksMap));
-        await _taskRepository.saveTasks(tasksMap.values.toList());
+        await _taskRepository.saveTasks(state.tasksOrdered.toList());
       }
     } on Exception catch (error, stackTrace) {
       addError(error, stackTrace);
     }
+  }
+
+  void _onUpdateTaskOrder(
+    OnUpdateTaskOrder event,
+    Emitter<TaskListState> emit,
+  ) {
+    final oldIndex = event.oldIndex;
+    var newIndex = event.newIndex;
+
+    if (event.oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    final tasksOrdered = state.tasksOrdered.toList();
+    final tasksMap = Map.of(state.tasksMap);
+
+    // Remove the task from its old position, and insert it at the new
+    // position with the updated index.
+    final task = tasksOrdered.removeAt(oldIndex);
+    tasksOrdered.insert(newIndex, task.copyWith(index: newIndex));
+
+    // Update indexes in tasksMap.
+    for (var i = 0; i < tasksOrdered.length; i++) {
+      final updatedTask = tasksOrdered[i].copyWith(index: i);
+      tasksMap[updatedTask.directory] = updatedTask;
+    }
+
+    emit(state.copyWith(tasksMap: tasksMap));
   }
 
   Future<void> _onRefreshTaskBranch(

@@ -27,16 +27,14 @@ class TaskListState extends Equatable {
     );
   }
 
-  /// Returns sorted task list.
-  List<Task> get taskListSorted {
-    final taskList = tasksMap.values;
-    return taskList.sortedBy((task) => task.name);
+  /// Returns ordered task list.
+  List<Task> get tasksOrdered {
+    return tasksMap.values.sortedBy<num>((task) => task.index);
   }
 
   /// Returns any of the task exception.
   Exception? get taskException {
-    final taskList = tasksMap.values;
-    return taskList
+    return tasksMap.values
         .map((e) => e.state)
         .whereType<ErrorState>()
         .firstOrNull
@@ -45,8 +43,7 @@ class TaskListState extends Equatable {
 
   /// Return true if there is ongoing task.
   bool get isTaskOngoing {
-    final taskList = tasksMap.values;
-    return taskList.any((element) => element.state is OngoingState);
+    return tasksMap.values.any((element) => element.state is OngoingState);
   }
 
   /// Return true if we can add new task to list.

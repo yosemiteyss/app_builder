@@ -116,26 +116,61 @@ class _TaskViewState extends State<TaskView> {
               ),
               // Task list
               BlocSelector<TaskListBloc, TaskListState, List<Task>>(
-                selector: (state) => state.taskListSorted,
+                selector: (state) => state.tasksOrdered,
                 builder: (context, state) {
                   return SliverPadding(
-                    padding:
-                        const EdgeInsets.only(left: 24, right: 24, bottom: 24),
-                    sliver: SliverList.separated(
+                    padding: const EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      bottom: 24,
+                    ),
+                    sliver: SliverReorderableList(
                       itemCount: state.length,
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(height: 8);
-                      },
                       itemBuilder: (context, index) {
-                        return _TaskRow(
+                        return ReorderableDragStartListener(
                           key: ValueKey(state[index].directory),
-                          task: state[index],
-                          onBuildTask: (task) {
-                            _buildTaskItem(context, task);
-                          },
+                          index: index,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _TaskRow(
+                                    task: state[index],
+                                    onBuildTask: (task) {
+                                      _buildTaskItem(context, task);
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       },
+                      onReorder: (oldIndex, newIndex) {
+                        context.read<TaskListBloc>().add(
+                              OnUpdateTaskOrder(
+                                oldIndex: oldIndex,
+                                newIndex: newIndex,
+                              ),
+                            );
+                      },
                     ),
+                    // SliverList.separated(
+                    //   itemCount: state.length,
+                    //   separatorBuilder: (context, index) {
+                    //     return const SizedBox(height: 8);
+                    //   },
+                    //   itemBuilder: (context, index) {
+                    //     return _TaskRow(
+                    //       key: ValueKey(state[index].directory),
+                    //       task: state[index],
+                    //       onBuildTask: (task) {
+                    //         _buildTaskItem(context, task);
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                   );
                 },
               ),
@@ -165,7 +200,6 @@ class _TaskRow extends StatefulWidget {
   const _TaskRow({
     required this.task,
     required this.onBuildTask,
-    super.key,
   });
 
   final Task task;

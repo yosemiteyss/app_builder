@@ -80,6 +80,7 @@ class ErrorState extends TaskState {
 class Task extends Equatable {
   /// {@macro task}
   const Task({
+    required this.index,
     required this.directory,
     required this.state,
     this.branches = const [],
@@ -93,6 +94,7 @@ class Task extends Equatable {
   /// Convert JSON to a [Task].
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
+      index: (json['index'] as int?) ?? -1,
       directory: json['directory'] as String,
       state: const IdleState(),
       gradleTask: json['gradle_task'] as String?,
@@ -101,6 +103,9 @@ class Task extends Equatable {
       isExcludeFromBuildAll: json['is_exclude_from_build_all'] as bool?,
     );
   }
+
+  /// The task index.
+  final int index;
 
   /// The project directory.
   final String directory;
@@ -131,6 +136,7 @@ class Task extends Equatable {
 
   /// Create a copy of [Task].
   Task copyWith({
+    int? index,
     String? directory,
     TaskState? state,
     List<String>? branches,
@@ -141,6 +147,7 @@ class Task extends Equatable {
     bool? isExcludeFromBuildAll,
   }) {
     return Task(
+      index: index ?? this.index,
       directory: directory ?? this.directory,
       state: state ?? this.state,
       branches: branches ?? this.branches,
@@ -155,6 +162,7 @@ class Task extends Equatable {
 
   /// Convert [Task] to JSON.
   Map<String, dynamic> toJson() => {
+        'index': index,
         'directory': directory,
         'gradle_task': gradleTask,
         'output_dir': outputDir,
@@ -164,6 +172,7 @@ class Task extends Equatable {
 
   @override
   List<Object?> get props => [
+        index,
         directory,
         state,
         branches,

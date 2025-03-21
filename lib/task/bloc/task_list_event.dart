@@ -77,6 +77,19 @@ final class OnUpdateTaskOutputDir extends TaskListEvent {
   List<Object?> get props => [task];
 }
 
+final class OnUpdateTaskOrder extends TaskListEvent {
+  const OnUpdateTaskOrder({
+    required this.oldIndex,
+    required this.newIndex,
+  });
+
+  final int oldIndex;
+  final int newIndex;
+
+  @override
+  List<Object?> get props => [];
+}
+
 final class OnRefreshTaskBranch extends TaskListEvent {
   const OnRefreshTaskBranch({required this.task});
 

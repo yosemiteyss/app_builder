@@ -6,10 +6,12 @@ void main() {
     test('should supports value comparison', () {
       expect(
         const Task(
+          index: 0,
           directory: 'task_dir',
           state: IdleState(),
         ),
         const Task(
+          index: 0,
           directory: 'task_dir',
           state: IdleState(),
         ),
@@ -38,6 +40,7 @@ void main() {
     group('toJson', () {
       test('should returns correct map', () {
         const task = Task(
+          index: 0,
           directory: 'path/to',
           state: IdleState(),
           gradleTask: 'assembleDebug',
@@ -47,6 +50,7 @@ void main() {
         );
 
         expect(task.toJson(), {
+          'index': 0,
           'directory': 'path/to',
           'gradle_task': 'assembleDebug',
           'output_dir': 'build/outputs',
@@ -59,6 +63,7 @@ void main() {
     group('copyWith', () {
       test('should creates a new instance with updated values', () {
         const task = Task(
+          index: 0,
           directory: 'path/to',
           state: IdleState(),
         );
