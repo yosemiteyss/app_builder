@@ -115,9 +115,10 @@ class _TaskViewState extends State<TaskView> {
                 ),
               ),
               // Task list
-              BlocSelector<TaskListBloc, TaskListState, List<Task>>(
-                selector: (state) => state.tasksOrdered,
+              BlocSelector<TaskListBloc, TaskListState, (List<Task>, bool)>(
+                selector: (state) => (state.tasksOrdered, state.isTaskOngoing),
                 builder: (context, state) {
+                  final (tasksOrdered, isTaskOngoing) = state;
                   return SliverPadding(
                     padding: const EdgeInsets.only(
                       left: 24,
@@ -125,18 +126,19 @@ class _TaskViewState extends State<TaskView> {
                       bottom: 24,
                     ),
                     sliver: SliverReorderableList(
-                      itemCount: state.length,
+                      itemCount: tasksOrdered.length,
                       itemBuilder: (context, index) {
                         return ReorderableDragStartListener(
-                          key: ValueKey(state[index].directory),
+                          key: ValueKey(tasksOrdered[index].directory),
                           index: index,
+                          enabled: isTaskOngoing,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: _TaskRow(
-                                    task: state[index],
+                                    task: tasksOrdered[index],
                                     onBuildTask: (task) {
                                       _buildTaskItem(context, task);
                                     },
