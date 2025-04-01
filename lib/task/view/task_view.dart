@@ -131,7 +131,7 @@ class _TaskViewState extends State<TaskView> {
                         return ReorderableDragStartListener(
                           key: ValueKey(tasksOrdered[index].directory),
                           index: index,
-                          enabled: isTaskOngoing,
+                          enabled: !isTaskOngoing,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
@@ -158,21 +158,6 @@ class _TaskViewState extends State<TaskView> {
                             );
                       },
                     ),
-                    // SliverList.separated(
-                    //   itemCount: state.length,
-                    //   separatorBuilder: (context, index) {
-                    //     return const SizedBox(height: 8);
-                    //   },
-                    //   itemBuilder: (context, index) {
-                    //     return _TaskRow(
-                    //       key: ValueKey(state[index].directory),
-                    //       task: state[index],
-                    //       onBuildTask: (task) {
-                    //         _buildTaskItem(context, task);
-                    //       },
-                    //     );
-                    //   },
-                    // ),
                   );
                 },
               ),
