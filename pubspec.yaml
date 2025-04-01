@@ -1,7 +1,7 @@
 name: app_builder
 description: Build tools for Android apps.
 publish_to: none
-version: 1.0.8
+version: 1.0.9
 environment:
   sdk: ">=3.3.0 <4.0.0"
   flutter: 3.27.4
